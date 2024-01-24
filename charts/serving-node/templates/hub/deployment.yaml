@@ -35,7 +35,9 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.hub.serviceAccount.create }}
       serviceAccountName: {{ include "serving-node.hub.ServiceAccountName" . }}
+      {{- end }}
       securityContext:
         {{- toYaml .Values.hub.podSecurityContext | nindent 8 }}
       containers:
