@@ -1,4 +1,4 @@
-# Default values for rss3-node.
+# Default values for serving-node.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -6,7 +6,7 @@
 global:
   # -- Common labels for the all resources
   additionalLabels: {}
-  # app: rss3-node
+  # app: serving-node
 
   # -- Number of old deployment ReplicaSets to retain. The rest will be garbage collected.
   revisionHistoryLimit: 3
@@ -138,7 +138,7 @@ hub:
     # -- Create server service account
     create: true
     # -- Server service account name
-    name: rss3-node-hub
+    name: serving-node-hub
     # -- Annotations applied to created service account
     annotations: { }
     # -- Labels applied to created service account
@@ -274,7 +274,7 @@ configs:
   discovery:
     maintainer:
       owner_evm_address: "0x123" # address to receive network incentivization and ownership verification
-      website: "https://abc.com/rss3-node" # link to your website
+      website: "https://abc.com/serving-node" # link to your website
     server:
       # endpoint is how the Global Indexer reaches your RSS3 node
       # a domain name is recommended but not required, you can use an IP address+port as well

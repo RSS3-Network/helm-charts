@@ -8,24 +8,24 @@ metadata:
     {{ $key }}: {{ $value | quote }}
     {{- end }}
   {{- end }}
-  name: {{ template "rss3-node.broadcaster.fullname" .}}
+  name: {{ template "serving-node.broadcaster.fullname" .}}
   labels:
-    {{- include "rss3-node.labels" (dict "context" . "component" .Values.broadcaster.name "name" .Values.broadcaster.name) | nindent 4 }}
+    {{- include "serving-node.labels" (dict "context" . "component" .Values.broadcaster.name "name" .Values.broadcaster.name) | nindent 4 }}
 spec:
   replicas: {{ .Values.broadcaster.replicaCount }}
   revisionHistoryLimit: {{ .Values.global.revisionHistoryLimit }}
   selector:
     matchLabels:
-      {{- include "rss3-node.selectorLabels" (dict "context" . "name" .Values.broadcaster.name) | nindent 6 }}
+      {{- include "serving-node.selectorLabels" (dict "context" . "name" .Values.broadcaster.name) | nindent 6 }}
   template:
     metadata:
       annotations:
-        checksum/configmap: {{ include "rss3-node.globalConfigCheckSum" .}}
+        checksum/configmap: {{ include "serving-node.globalConfigCheckSum" .}}
       {{- with (mergeOverwrite (deepCopy .Values.global.podAnnotations) .Values.broadcaster.podAnnotations) }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "rss3-node.labels" (dict "context" . "component" .Values.broadcaster.name "name" .Values.broadcaster.name) | nindent 8 }}
+        {{- include "serving-node.labels" (dict "context" . "component" .Values.broadcaster.name "name" .Values.broadcaster.name) | nindent 8 }}
  {{- with .Values.broadcaster.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -34,7 +34,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "rss3-node.hub.ServiceAccountName" . }}
+      serviceAccountName: {{ include "serving-node.hub.ServiceAccountName" . }}
       securityContext:
         {{- toYaml .Values.broadcaster.podSecurityContext | nindent 8 }}
       containers:
@@ -49,14 +49,14 @@ spec:
             {{- toYaml .Values.broadcaster.resources | nindent 12 }}
           volumeMounts:
             - name: config
-              mountPath: /root/rss3-node/deploy
+              mountPath: /root/serving-node/deploy
           {{- with .Values.broadcaster.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
       volumes:
         - name: config
           configMap:
-            name: {{ include "rss3-node.fullname" . }}
+            name: {{ include "serving-node.fullname" . }}
             defaultMode: 0644
       {{- with .Values.broadcaster.volumes }}
         {{- toYaml . | nindent 8 }}

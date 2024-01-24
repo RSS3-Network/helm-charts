@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "rss3-node.fullname" . }}
+  name: {{ include "serving-node.fullname" . }}
   labels:
-    {{- include "rss3-node.labels" (dict "context" . ) | nindent 4 }}
+    {{- include "serving-node.labels" (dict "context" . ) | nindent 4 }}
   {{- if .Values.configs.annotations }}
   annotations:
   {{- range $key, $value := .Values.configs.annotations }}

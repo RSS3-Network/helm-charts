@@ -7,9 +7,9 @@ metadata:
     {{ $key }}: {{ $value | quote }}
     {{- end }}
   {{- end }}
-  name: {{ template "rss3-node.hub.fullname" .}}
+  name: {{ template "serving-node.hub.fullname" .}}
   labels:
-    {{- include "rss3-node.labels" (dict "context" . "component" .Values.hub.name "name" .Values.hub.name) | nindent 4 }}
+    {{- include "serving-node.labels" (dict "context" . "component" .Values.hub.name "name" .Values.hub.name) | nindent 4 }}
 spec:
   {{- if not .Values.hub.autoscaling.enabled }}
   replicas: {{ .Values.hub.replicaCount }}
@@ -17,16 +17,16 @@ spec:
   revisionHistoryLimit: {{ .Values.global.revisionHistoryLimit }}
   selector:
     matchLabels:
-      {{- include "rss3-node.selectorLabels" (dict "context" . "name" .Values.hub.name) | nindent 6 }}
+      {{- include "serving-node.selectorLabels" (dict "context" . "name" .Values.hub.name) | nindent 6 }}
   template:
     metadata:
       annotations:
-        checksum/configmap: {{ include "rss3-node.globalConfigCheckSum" .}}
+        checksum/configmap: {{ include "serving-node.globalConfigCheckSum" .}}
       {{- with (mergeOverwrite (deepCopy .Values.global.podAnnotations) .Values.hub.podAnnotations) }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "rss3-node.labels" (dict "context" . "component" .Values.hub.name "name" .Values.hub.name) | nindent 8 }}
+        {{- include "serving-node.labels" (dict "context" . "component" .Values.hub.name "name" .Values.hub.name) | nindent 8 }}
 	{{- with .Values.hub.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -35,7 +35,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "rss3-node.hub.ServiceAccountName" . }}
+      serviceAccountName: {{ include "serving-node.hub.ServiceAccountName" . }}
       securityContext:
         {{- toYaml .Values.hub.podSecurityContext | nindent 8 }}
       containers:
@@ -60,14 +60,14 @@ spec:
             {{- toYaml .Values.hub.resources | nindent 12 }}
           volumeMounts:
             - name: config
-              mountPath: /root/rss3-node/deploy
+              mountPath: /root/serving-node/deploy
           {{- with .Values.hub.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
       volumes:
         - name: config
           configMap:
-            name: {{ include "rss3-node.fullname" . }}
+            name: {{ include "serving-node.fullname" . }}
             defaultMode: 0644
       {{- with .Values.hub.volumes }}
         {{- toYaml . | nindent 8 }}
