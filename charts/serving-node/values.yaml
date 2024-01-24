@@ -273,15 +273,11 @@ configs:
   environment: development
   discovery:
     maintainer:
-      owner_evm_address: "0x123" # address to receive network incentivization and ownership verification
-      website: "https://abc.com/serving-node" # link to your website
+      evm_address: # address to receive network incentivization and ownership verification
+      signature:
     server:
-      # endpoint is how the Global Indexer reaches your RSS3 node
-      # a domain name is recommended but not required, you can use an IP address+port as well
-      endpoint: "https://rss3.abc.com/"
-      signature: ""
-      authentication:
-        access_key: ""
+      endpoint: # link to your website
+      global_indexer_endpoint: https://gi.rss3.dev/ # link to global indexer
   annotations: {}
 
 ## Node Indexer
