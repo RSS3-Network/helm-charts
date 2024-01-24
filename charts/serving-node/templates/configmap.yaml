@@ -27,7 +27,7 @@ data:
           parameters:
         {{- toYaml $indexer.parameters | nindent 12 }}
       {{- end }}
-    {{- else -}}
+    {{- else }}
       decentralized: []
     {{- end }}
     database:
