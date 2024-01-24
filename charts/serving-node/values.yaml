@@ -228,7 +228,7 @@ broadcaster:
   # -- Labels to be added to server pods
   podLabels: { }
 
-  # -- Resource limits and requests for the Argo CD server
+  # -- Resource limits and requests for the BroadCaster
   resources: { }
   #  limits:
   #    cpu: 100m
