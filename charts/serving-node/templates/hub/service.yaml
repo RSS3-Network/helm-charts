@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "rss3-node.hub.fullname" . }}
+  labels:
+    {{- include "rss3-node.labels" (dict "context" . "component" .Values.hub.name "name" .Values.hub.name) | nindent 4 }}
+spec:
+  type: {{ .Values.hub.service.type }}
+  ports:
+    - port: {{ .Values.hub.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "rss3-node.selectorLabels" (dict "context" . "name" .Values.hub.name) | nindent 4 }}

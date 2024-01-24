@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "rss3-node.fullname" . }}-test-connection"
+  labels:
+    {{- include "rss3-node.labels" (dict "context" . ) | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "rss3-node.fullname" . }}:{{ .Values.hub.service.port }}']
+  restartPolicy: Never

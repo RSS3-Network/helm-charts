@@ -1,0 +1,56 @@
+{{- range $key, $indexer :=  .Values.indexers }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "rss3-node.indexer.fullname" (merge (dict "context" $) $indexer)}}
+  labels:
+    {{- include "rss3-node.indexer.labels" (dict "context" $ "indexer" $indexer "component" "indexer") | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "rss3-node.indexer.selectorLabels" (dict "context" $ "indexer" $indexer "component" "indexer") | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/configmap: {{ include "rss3-node.globalConfigCheckSum" $}}
+      {{- with $.Values.global.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "rss3-node.indexer.labels" (dict "context" $ "indexer" $indexer "component" "indexer") | nindent 8 }}
+  {{- with $.Values.global.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with $.Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "rss3-node.hub.ServiceAccountName" $ }}
+      securityContext:
+        {{- toYaml $.Values.global.podSecurityContext | nindent 8 }}
+      containers:
+        - name: indexer
+          securityContext:
+            {{- toYaml $.Values.global.securityContext | nindent 12 }}
+          image: "{{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag | default $.Chart.AppVersion }}"
+          args:
+            - '--module=indexer'
+            - '--indexer.network={{ $indexer.network }}'
+            - '--indexer.worker={{ $indexer.worker }}'
+          {{- with  $indexer.parameters }}
+            - '--indexer.parameters={{ $indexer.parameters | toJson }}'
+          {{- end }}
+          imagePullPolicy: {{ $.Values.global.image.imagePullPolicy }}
+          volumeMounts:
+            - name: config
+              mountPath: /root/rss3-node/deploy
+          resources:
+            {{- toYaml ($indexer.resources | default $.Values.global.indexerResources ) | nindent 12 }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "rss3-node.fullname" $ }}
+            defaultMode: 0644
+{{- end }}

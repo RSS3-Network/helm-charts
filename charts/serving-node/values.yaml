@@ -1,0 +1,339 @@
+# Default values for rss3-node.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## Globally shared configuration
+global:
+  # -- Common labels for the all resources
+  additionalLabels: {}
+  # app: rss3-node
+
+  # -- Number of old deployment ReplicaSets to retain. The rest will be garbage collected.
+  revisionHistoryLimit: 3
+
+  # Default image used by all components
+  image:
+    # -- If defined, a repository applied to all RSS3 Node deployments
+    repository: rss3/node
+    # -- Overrides the global RSS3 Node image tag whose default is the chart appVersion
+    tag: ""
+    # -- If defined, a imagePullPolicy applied to all RSS3 node deployments
+    imagePullPolicy: IfNotPresent
+
+  # -- Secrets with credentials to pull images from a private registry
+  imagePullSecrets: []
+
+  # -- Annotations for the all deployed Statefulsets
+  statefulsetAnnotations: {}
+
+  # -- Annotations for the all deployed Deployments
+  deploymentAnnotations: {}
+
+  # -- Annotations for the all deployed pods
+  podAnnotations: {}
+
+  # -- Labels for the all deployed pods
+  podLabels: {}
+
+  # -- Toggle and define pod-level security context.
+  # @default -- `{}` (See [values.yaml])
+  securityContext: {}
+  #  runAsUser: 999
+  #  runAsGroup: 999
+  #  fsGroup: 999
+
+  # -- Mapping between IP and hostnames that will be injected as entries in the pod's hosts files
+  hostAliases: []
+  # - ip: 10.20.30.40
+  #   hostnames:
+  #   - git.myhostname
+
+  # Default network policy rules used by all components
+  networkPolicy:
+    # -- Create NetworkPolicy objects for all components
+    create: false
+    # -- Default deny all ingress traffic
+    defaultDenyIngress: false
+
+  # -- Default priority class for all components
+  priorityClassName: ""
+
+  # -- Default node selector for all components
+  nodeSelector: {}
+
+  # -- Default tolerations for all components
+  tolerations: {}
+
+  # Default affinity preset for all components
+  affinity:
+    # -- Default pod anti-affinity rules. Either: `none`, `soft` or `hard`
+    podAntiAffinity: soft
+    # Node affinity rules
+    nodeAffinity:
+      # -- Default node affinity rules. Either: `none`, `soft` or `hard`
+      type: hard
+      # -- Default match expressions for node affinity
+      matchExpressions: []
+        # - key: topology.kubernetes.io/zone
+        #   operator: In
+        #   values:
+        #    - antarctica-east1
+      #    - antarctica-west1
+
+  # -- Default [TopologySpreadConstraints] rules for all components
+  ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
+  ## If labelSelector is left out, it will default to the labelSelector of the component
+  topologySpreadConstraints: []
+    # - maxSkew: 1
+    #   topologyKey: topology.kubernetes.io/zone
+  #   whenUnsatisfiable: DoNotSchedule
+
+  # Indexer resources
+  indexerResources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
+nameOverride: ""
+fullnameOverride: ""
+
+
+## Hub
+hub:
+  # -- RSS3 Node hub name
+  name: hub
+
+  replicaCount: 1
+
+  image:
+    repository: rss3/node
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+
+  imagePullSecrets: [ ]
+
+  # -- Annotations to be added to server Deployment
+  deploymentAnnotations: { }
+
+  # -- Annotations to be added to server pods
+  podAnnotations: { }
+
+  # -- Labels to be added to server pods
+  podLabels: { }
+
+  # -- Resource limits and requests for the Argo CD server
+  resources: { }
+  #  limits:
+  #    cpu: 100m
+  #    memory: 128Mi
+  #  requests:
+  #    cpu: 50m
+  #    memory: 64Mi
+
+  serviceAccount:
+    # -- Create server service account
+    create: true
+    # -- Server service account name
+    name: rss3-node-hub
+    # -- Annotations applied to created service account
+    annotations: { }
+    # -- Labels applied to created service account
+    labels: { }
+    # -- Automount API credentials for the Service Account
+    automountServiceAccountToken: true
+
+  podSecurityContext: { }
+  # fsGroup: 2000
+
+  securityContext: { }
+    # capabilities:
+    #   drop:
+    #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  ingress:
+    enabled: false
+    className: ""
+    annotations: { }
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: chart-example.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: [ ]
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+  # Additional volumes on the output Deployment definition.
+  volumes: [ ]
+  # - name: foo
+  #   secret:
+  #     secretName: mysecret
+  #     optional: false
+
+  # Additional volumeMounts on the output Deployment definition.
+  volumeMounts: [ ]
+  # - name: foo
+  #   mountPath: "/etc/foo"
+  #   readOnly: true
+
+  nodeSelector: { }
+
+  tolerations: [ ]
+
+  affinity: { }
+
+## BroadCaster
+broadcaster:
+  enabled: false
+  # -- RSS3 Node hub name
+  name: broadcaster
+
+  replicaCount: 1
+
+  image:
+    repository: rss3/node
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+
+  imagePullSecrets: [ ]
+
+  # -- Annotations to be added to server Deployment
+  deploymentAnnotations: { }
+
+  # -- Annotations to be added to server pods
+  podAnnotations: { }
+
+  # -- Labels to be added to server pods
+  podLabels: { }
+
+  # -- Resource limits and requests for the Argo CD server
+  resources: { }
+  #  limits:
+  #    cpu: 100m
+  #    memory: 128Mi
+  #  requests:
+  #    cpu: 50m
+  #    memory: 64Mi
+
+
+  podSecurityContext: { }
+  # fsGroup: 2000
+
+  securityContext: { }
+    # capabilities:
+    #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+  # Additional volumes on the output Deployment definition.
+  volumes: [ ]
+  # - name: foo
+  #   secret:
+  #     secretName: mysecret
+  #     optional: false
+
+  # Additional volumeMounts on the output Deployment definition.
+  volumeMounts: [ ]
+  # - name: foo
+  #   mountPath: "/etc/foo"
+  #   readOnly: true
+
+  nodeSelector: { }
+
+  tolerations: [ ]
+
+  affinity: { }
+
+## Node Configs
+configs:
+  environment: development
+  discovery:
+    maintainer:
+      owner_evm_address: "0x123" # address to receive network incentivization and ownership verification
+      website: "https://abc.com/rss3-node" # link to your website
+    server:
+      # endpoint is how the Global Indexer reaches your RSS3 node
+      # a domain name is recommended but not required, you can use an IP address+port as well
+      endpoint: "https://rss3.abc.com/"
+      signature: ""
+      authentication:
+        access_key: ""
+  annotations: {}
+
+## Node Indexer
+indexers: []
+#  - network: ethereum
+#    worker: fallback
+#    endpoint: https://rpc.ankr.com/eth
+#    parameters:
+#      block_number_start: 14748840
+#    resources: {}
+
+#   Indexer resources
+#      resources:
+#        limits:
+#          cpu: 100m
+#          memory: 128Mi
+#        requests:
+#          cpu: 50m
+#        memory: 64Mi
+
+
+rsshub:
+  enabled: false
+
+additionalRSS:
+  - network: rss
+    endpoint: https://rsshub.app/
+    parameters:
+      authentication:
+        username:
+        password:
+        access_key:
+        access_code:
+
+## Database
+database:
+  driver: cockroachdb
+  partition: true
+  uri: postgres://root@localhost:26257/defaultdb
+
+stream:
+  enable: false
+  driver: kafka
+  topic: rss3.node.feeds
+  uri: localhost:9092
+
+observability:
+  opentelemetry:
+    metrics:
+      enable: false
+      endpoint: 0.0.0.0:9090
+    traces:
+      enable: false
+      insecure: true
+      endpoint: localhost:4318
