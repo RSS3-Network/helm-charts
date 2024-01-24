@@ -18,8 +18,8 @@ data:
     component:
       rss:
     {{- toYaml .Values.additionalRSS | nindent 8}}
-      decentralized:
     {{- if .Values.indexers }}
+      decentralized:
       {{- range $_, $indexer := .Values.indexers }}
         - network: {{ $indexer.network }}
           worker: {{ $indexer.worker }}
@@ -28,7 +28,7 @@ data:
         {{- toYaml $indexer.parameters | nindent 12 }}
       {{- end }}
     {{- else -}}
-  []
+      decentralized: []
     {{- end }}
     database:
     {{- toYaml .Values.database | nindent 6 }}
