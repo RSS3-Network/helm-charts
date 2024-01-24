@@ -160,6 +160,8 @@ hub:
   service:
     type: ClusterIP
     port: 80
+    # nodePort only can be set with type NodePort
+    # nodePort:
 
   ingress:
     enabled: false

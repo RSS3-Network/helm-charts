@@ -11,5 +11,11 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+      {{- with .Values.hub.service.appProtocol }}
+      appProtocol: {{ . }}
+      {{- end }}
+      {{- if (and (eq .Values.hub.service.type "NodePort") (not (empty .Values.hub.service.nodePort))) }}
+      nodePort: {{ .Values.hub.service.nodePort }}
+      {{- end }}
   selector:
     {{- include "serving-node.selectorLabels" (dict "context" . "name" .Values.hub.name) | nindent 4 }}
