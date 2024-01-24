@@ -44,7 +44,7 @@ spec:
         - name: {{ .Values.hub.name }}
           securityContext:
             {{- toYaml .Values.hub.securityContext | nindent 12 }}
-          image: "{{ default .Values.global.image.repository .Values.hub.image.repository }}:{{ .Values.hub.image.tag | default .Chart.AppVersion }}"
+          image: "{{ default .Values.global.image.repository .Values.hub.image.repository }}:{{ (default .Values.global.image.tag .Values.hub.image.tag) | default .Chart.AppVersion }}"
           imagePullPolicy: {{ default .Values.global.image.imagePullPolicy .Values.hub.image.pullPolicy }}
           args:
             - --module=hub
