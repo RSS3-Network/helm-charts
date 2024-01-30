@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ template "serving-node.hub.fullname" .}}
+  name: {{ template "node.hub.fullname" .}}
   labels:
-    {{- include "serving-node.labels" (dict "context" . "component" .Values.hub.name "name" .Values.hub.name) | nindent 4 }}
+    {{- include "node.labels" (dict "context" . "component" .Values.hub.name "name" .Values.hub.name) | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "serving-node.fullname" . }}
+    name: {{ include "node.fullname" . }}
   minReplicas: {{ .Values.hub.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.hub.autoscaling.maxReplicas }}
   metrics:

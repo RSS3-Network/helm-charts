@@ -1,4 +1,4 @@
-# Serving-Node Helm Chart
+# node Helm Chart
 
 ## Get Repo Info
 
@@ -14,7 +14,7 @@ _See [helm repo](https://helm.sh/docs/helm/helm_repo/) for command documentation
 To install the chart with the release name `my-release`:
 
 ```console
-helm install my-release rss3/serving-node
+helm install my-release rss3/node
 ```
 
 ## Uninstalling the Chart
@@ -27,7 +27,7 @@ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-## Configuration values for serving-node.
+## Configuration values for node.
 
 ### Globally shared configuration
 | Parameter                               | Description                                                                 | Default Value |
@@ -65,7 +65,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | hub.podLabels                  | Labels to be added to server pods              | {}               |
 | hub.resources                  | Resource limits and requests for the Hub       | {}               |
 | hub.serviceAccount.create      | Create server service account                  | true             |
-| hub.serviceAccount.name        | Server service account name                    | serving-node-hub |
+| hub.serviceAccount.name        | Server service account name                    | node-hub |
 | hub.serviceAccount.annotations | Annotations applied to created service account | {}               |
 
 ### BroadCaster

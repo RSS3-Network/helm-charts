@@ -1,4 +1,4 @@
-# Default values for serving-node.
+# Default values for node.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -6,7 +6,7 @@
 global:
   # -- Common labels for the all resources
   additionalLabels: {}
-  # app: serving-node
+  # app: node
 
   # -- Number of old deployment ReplicaSets to retain. The rest will be garbage collected.
   revisionHistoryLimit: 3
@@ -138,7 +138,7 @@ hub:
     # -- Create server service account
     create: true
     # -- Server service account name
-    name: serving-node-hub
+    name: node-hub
     # -- Annotations applied to created service account
     annotations: { }
     # -- Labels applied to created service account

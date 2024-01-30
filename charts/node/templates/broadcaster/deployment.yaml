@@ -8,24 +8,24 @@ metadata:
     {{ $key }}: {{ $value | quote }}
     {{- end }}
   {{- end }}
-  name: {{ template "serving-node.broadcaster.fullname" .}}
+  name: {{ template "node.broadcaster.fullname" .}}
   labels:
-    {{- include "serving-node.labels" (dict "context" . "component" .Values.broadcaster.name "name" .Values.broadcaster.name) | nindent 4 }}
+    {{- include "node.labels" (dict "context" . "component" .Values.broadcaster.name "name" .Values.broadcaster.name) | nindent 4 }}
 spec:
   replicas: {{ .Values.broadcaster.replicaCount }}
   revisionHistoryLimit: {{ .Values.global.revisionHistoryLimit }}
   selector:
     matchLabels:
-      {{- include "serving-node.selectorLabels" (dict "context" . "name" .Values.broadcaster.name) | nindent 6 }}
+      {{- include "node.selectorLabels" (dict "context" . "name" .Values.broadcaster.name) | nindent 6 }}
   template:
     metadata:
       annotations:
-        checksum/configmap: {{ include "serving-node.globalConfigCheckSum" .}}
+        checksum/configmap: {{ include "node.globalConfigCheckSum" .}}
       {{- with (mergeOverwrite (deepCopy .Values.global.podAnnotations) .Values.broadcaster.podAnnotations) }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "serving-node.labels" (dict "context" . "component" .Values.broadcaster.name "name" .Values.broadcaster.name) | nindent 8 }}
+        {{- include "node.labels" (dict "context" . "component" .Values.broadcaster.name "name" .Values.broadcaster.name) | nindent 8 }}
  {{- with .Values.broadcaster.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -34,7 +34,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "serving-node.hub.ServiceAccountName" . }}
+      serviceAccountName: {{ include "node.hub.ServiceAccountName" . }}
       securityContext:
         {{- toYaml .Values.broadcaster.podSecurityContext | nindent 8 }}
       containers:
@@ -49,14 +49,14 @@ spec:
             {{- toYaml .Values.broadcaster.resources | nindent 12 }}
           volumeMounts:
             - name: config
-              mountPath: /root/serving-node/deploy
+              mountPath: /root/node/deploy
           {{- with .Values.broadcaster.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
       volumes:
         - name: config
           configMap:
-            name: {{ include "serving-node.fullname" . }}
+            name: {{ include "node.fullname" . }}
             defaultMode: 0644
       {{- with .Values.broadcaster.volumes }}
         {{- toYaml . | nindent 8 }}
