@@ -1,4 +1,4 @@
-{{- if add .Values.broadcaster.enabled .Values.broadcaster.ingress.enabled -}}
+{{- if (add .Values.broadcaster.enabled .Values.broadcaster.ingress.enabled) -}}
 {{- $fullName := include "node.broadcaster.fullname" . -}}
 {{- $svcPort := .Values.broadcaster.service.port -}}
 {{- if and .Values.broadcaster.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}

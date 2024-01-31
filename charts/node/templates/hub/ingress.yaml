@@ -1,4 +1,4 @@
-{{- if add .Values.hub.enabled .Values.hub.ingress.enabled -}}
+{{- if (add .Values.hub.enabled .Values.hub.ingress.enabled) -}}
 {{- $fullName := include "node.hub.fullname" . -}}
 {{- $svcPort := .Values.hub.service.port -}}
 {{- if and .Values.hub.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
