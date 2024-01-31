@@ -11,9 +11,9 @@ entries:
       version: 0.2.9
     description: A Helm chart for Kubernetes
     digest: 95d2b80734220a426cce4ea32dd33fe0088275c84bdc641057af001f825085a1
-    name: serving-node
+    name: node
     type: application
     urls:
-    - https://github.com/RSS3-Network/helm-charts/releases/download/serving-node-0.1.2/serving-node-0.1.2.tgz
+    - https://github.com/RSS3-Network/helm-charts/releases/download/node-0.1.2/node-0.1.2.tgz
     version: 0.1.2
 generated: "2024-01-31T05:54:38.300838902Z"
