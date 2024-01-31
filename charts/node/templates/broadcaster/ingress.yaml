@@ -1,9 +1,9 @@
-{{- if add .Values.hub.enabled .Values.hub.ingress.enabled -}}
-{{- $fullName := include "node.hub.fullname" . -}}
-{{- $svcPort := .Values.hub.service.port -}}
-{{- if and .Values.hub.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
-  {{- if not (hasKey .Values.hub.ingress.annotations "kubernetes.io/ingress.class") }}
-  {{- $_ := set .Values.hub.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
+{{- if add .Values.broadcaster.enabled .Values.broadcaster.ingress.enabled -}}
+{{- $fullName := include "node.broadcaster.fullname" . -}}
+{{- $svcPort := .Values.broadcaster.service.port -}}
+{{- if and .Values.broadcaster.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.broadcaster.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.broadcaster.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
   {{- end }}
 {{- end }}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
@@ -17,18 +17,18 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    {{- include "node.labels" (dict "context" . "component" .Values.hub.name "name" .Values.hub.name) | nindent 4 }}
-  {{- with .Values.hub.ingress.annotations }}
+    {{- include "node.labels" (dict "context" . "component" .Values.broadcaster.name "name" .Values.broadcaster.name) | nindent 4 }}
+  {{- with .Values.broadcaster.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and .Values.hub.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingressClassName: {{ .Values.hub.ingress.className }}
+  {{- if and .Values.broadcaster.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.broadcaster.ingress.className }}
   {{- end }}
-  {{- if .Values.hub.ingress.tls }}
+  {{- if .Values.broadcaster.ingress.tls }}
   tls:
-    {{- range .Values.hub.ingress.tls }}
+    {{- range .Values.broadcaster.ingress.tls }}
     - hosts:
         {{- range .hosts }}
         - {{ . | quote }}
@@ -37,7 +37,7 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-    {{- range .Values.hub.ingress.hosts }}
+    {{- range .Values.broadcaster.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:
