@@ -11,7 +11,7 @@ metadata:
   {{- end }}
   {{- end }}
 data:
-  config.development.yaml: |
+  config.yaml: |
     environment: {{ .Values.configs.environment }}
     discovery:
     {{- toYaml .Values.configs.discovery | nindent 6}}
