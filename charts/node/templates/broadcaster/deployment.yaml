@@ -72,7 +72,7 @@ spec:
             {{- toYaml .Values.broadcaster.resources | nindent 12 }}
           volumeMounts:
             - name: config
-              mountPath: /root/node/deploy
+              mountPath: /etc/rss3/node
           {{- with .Values.broadcaster.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
