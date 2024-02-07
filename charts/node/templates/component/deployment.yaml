@@ -64,7 +64,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /healthcheck
-              port: http
+              port: metrics
               scheme: HTTP
             initialDelaySeconds: 10
             timeoutSeconds: 1
