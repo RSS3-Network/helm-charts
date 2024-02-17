@@ -40,7 +40,7 @@ spec:
             - '--indexer.network={{ $indexer.network }}'
             - '--indexer.worker={{ $indexer.worker }}'
           {{- with  $indexer.parameters }}
-            - '--indexer.parameters={{ $indexer.parameters | toJson }}'
+            - '--indexer.parameters={{ $indexer.parameters | toRawJson }}'
           {{- end }}
           imagePullPolicy: {{ $.Values.global.image.imagePullPolicy }}
           volumeMounts:
