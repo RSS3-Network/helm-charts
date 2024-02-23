@@ -3,6 +3,16 @@ entries:
   chain:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-02-23T16:43:29.061686216Z"
+    description: A Helm chart for Kubernetes
+    digest: 6b28f25021677db1f77970705a6341a0015257dd790520ff65d5197b082c3446
+    name: chain
+    type: application
+    urls:
+    - https://github.com/RSS3-Network/helm-charts/releases/download/chain-0.1.12/chain-0.1.12.tgz
+    version: 0.1.12
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-02-23T15:49:22.998343242Z"
     description: A Helm chart for Kubernetes
     digest: 6cb19914d64b97848b7ee616353f1fa7a108e324b8dc562a74ef18c8e67949bf
@@ -208,4 +218,4 @@ entries:
     urls:
     - https://github.com/RSS3-Network/helm-charts/releases/download/vsl-chain-0.1.0/vsl-chain-0.1.0.tgz
     version: 0.1.0
-generated: "2024-02-23T15:49:22.998391624Z"
+generated: "2024-02-23T16:43:29.061728705Z"
