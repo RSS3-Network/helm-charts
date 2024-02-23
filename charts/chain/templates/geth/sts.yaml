@@ -114,7 +114,9 @@ spec:
                 /scripts/node-entrypoint.sh \
                  --sequencer.enabled=true \
                  --sequencer.stopped=true \
-                 --p2p.sequencer.key=${_OP_NODE_P2P_SEQUENCER_KEY};
+                 --p2p.sequencer.key=${_OP_NODE_P2P_SEQUENCER_KEY} \
+                 --rpc.enable-admin=${_OP_NODE_RPC_ENABLE_ADMIN} \
+                 --rpc.admin-state=${_OP_NODE_RPC_ADMIN_STATE};
               else
                 /scripts/node-entrypoint.sh;
               fi
