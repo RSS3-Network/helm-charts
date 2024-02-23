@@ -25,6 +25,9 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if .Values.batcher.serviceAccount.create }}
+      serviceAccountName: {{ include "vsl-chain.batcher.serviceAccountName" . }}
+      {{- end }}
       containers:
         - name: batcher
           image: {{ .Values.batcher.image.repository }}:{{ .Values.batcher.image.tag }}
