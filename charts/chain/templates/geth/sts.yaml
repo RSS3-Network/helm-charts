@@ -1,0 +1,158 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  {{- with (mergeOverwrite (deepCopy .Values.global.deploymentAnnotations) .Values.geth.deploymentAnnotations) }}
+  annotations:
+    {{- range $key, $value := . }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+  name: {{ template "vsl-chain.geth.fullname" .}}
+  labels:
+    {{- include "vsl-chain.labels" (dict "context" . "component" .Values.geth.name "name" .Values.geth.name) | nindent 4 }}
+spec:
+  {{- if not .Values.geth.autoscaling.enabled }}
+  replicas: {{ .Values.geth.replicaCount }}
+  {{- end }}
+  revisionHistoryLimit: {{ .Values.global.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      {{- include "vsl-chain.selectorLabels" (dict "context" . "name" .Values.geth.name) | nindent 6 }}
+#  updateStrategy:
+#    type: RollingUpdate
+#    rollingUpdate:
+#      partition: 0
+  serviceName: op-geth
+  template:
+    metadata:
+      annotations:
+        checksum/configmap: {{ include "vsl-chain.globalConfigCheckSum" .}}
+      {{- with (mergeOverwrite (deepCopy .Values.global.podAnnotations) .Values.geth.podAnnotations) }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "vsl-chain.labels" (dict "context" . "component" .Values.geth.name "name" .Values.geth.name) | nindent 8 }}
+	{{- with .Values.geth.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        enabled: "true"
+    spec:
+      {{- with .Values.geth.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.geth.serviceAccount.create }}
+      serviceAccountName: {{ include "vsl-chain.geth.serviceAccountName" . }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.geth.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: config
+          emptyDir: { }
+        - name: scripts
+          configMap:
+            name: op-scripts
+            defaultMode: 0755
+        - name: log
+          emptyDir: {}
+      initContainers:
+        - name: download-cfg
+          image: curlimages/curl
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              curl -o /config/genesis.json {{ .Values.geth.genesisJsonPath }};
+              ls -l /config/genesis.json;
+              curl -o /config/rollup.json {{ .Values.node.rollupJsonPath }};
+              ls -l /config/rollup.json;
+          volumeMounts:
+            - mountPath: /config
+              name: config
+        - name: generate-key
+          image: openquantumsafe/openssl3
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              openssl rand -hex 32 > /config/opnode_p2p_priv.txt;
+              cat /config/opnode_p2p_priv.txt;
+              openssl rand -hex 32 > /config/jwt-secret.txt;
+              cat /config/jwt-secret.txt;
+          volumeMounts:
+            - mountPath: /config
+              name: config
+      containers:
+        - name: geth
+          image: {{ .Values.geth.image.repository }}:{{ .Values.geth.image.tag }}
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              /scripts/geth-entrypoint.sh;
+          ports:
+            - containerPort: 8645
+              protocol: TCP
+            - containerPort: 7400
+              protocol: TCP
+              name: metrics
+          envFrom:
+            - secretRef:
+                name: {{ template "vsl-chain.geth.fullname" .}}
+          volumeMounts:
+            - mountPath: /config
+              name: config
+            - mountPath: /scripts
+              name: scripts
+            - mountPath: /data
+              name: data
+        - name: node
+          image: {{ .Values.node.image.repository }}:{{ .Values.node.image.tag }}
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              SET_INDEX=${HOSTNAME##*-};
+              echo "Starting initializing for node $SET_INDEX";
+              if [ "$SET_INDEX" -eq 0 ]; then
+                /scripts/node-entrypoint.sh \
+                 --sequencer.enabled=true \
+                 --sequencer.stopped=true \
+                 --p2p.sequencer.key=${_OP_NODE_P2P_SEQUENCER_KEY} \
+                 --rpc.enable-admin=${_OP_NODE_RPC_ENABLE_ADMIN} \
+                 --rpc.admin-state=${_OP_NODE_RPC_ADMIN_STATE};
+              else
+                /scripts/node-entrypoint.sh;
+              fi
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 6161
+              protocol: TCP
+            - containerPort: 7401
+              protocol: TCP
+              name: metrics
+            - containerPort: 9103
+              protocol: TCP
+            - containerPort: 9645
+              protocol: TCP
+          envFrom:
+            - secretRef:
+                name: {{ template "vsl-chain.node.fullname" .}}
+          volumeMounts:
+            - mountPath: /config
+              name: config
+            - mountPath: /scripts
+              name: scripts
+            - mountPath: /op_log
+              name: log
+  volumeClaimTemplates:
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: data
+      spec:
+        storageClassName: standard
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 500Gi
+
+
+
