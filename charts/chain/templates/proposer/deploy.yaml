@@ -21,6 +21,10 @@ spec:
       labels:
         app: {{ template "vsl-chain.proposer.fullname" .}}
     spec:
+      {{- with .Values.signer.image.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: proposer
           image: {{ .Values.proposer.image.repository }}:{{ .Values.proposer.image.tag }}
