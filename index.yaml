@@ -106,4 +106,15 @@ entries:
     urls:
     - https://github.com/RSS3-Network/helm-charts/releases/download/node-0.1.2/node-0.1.2.tgz
     version: 0.1.2
-generated: "2024-02-17T06:21:51.335418Z"
+  vsl-chain:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2024-02-23T06:14:47.830415027Z"
+    description: A Helm chart for Kubernetes
+    digest: 22dc5b73e92505642e98d346c877cb60152c81faf461de8d9383b67858b5ba16
+    name: vsl-chain
+    type: application
+    urls:
+    - https://github.com/RSS3-Network/helm-charts/releases/download/vsl-chain-0.1.0/vsl-chain-0.1.0.tgz
+    version: 0.1.0
+generated: "2024-02-23T06:14:47.830438551Z"
