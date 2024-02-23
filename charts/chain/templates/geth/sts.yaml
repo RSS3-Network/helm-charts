@@ -111,12 +111,12 @@ spec:
               SET_INDEX=${HOSTNAME##*-};
               echo "Starting initializing for node $SET_INDEX";
               if [ "$SET_INDEX" -eq 0 ]; then
-                scripts/node-entrypoint.sh \
+                /scripts/node-entrypoint.sh \
                  --sequencer.enabled=true \
                  --sequencer.stopped=true \
                  --p2p.sequencer.key=173920e3721722d2eb2850ef5a5248037153e4e551475fa69dab266a5549367b;
               else
-                scripts/node-entrypoint.sh;
+                /scripts/node-entrypoint.sh;
               fi
           imagePullPolicy: IfNotPresent
           ports:
@@ -129,13 +129,6 @@ spec:
               protocol: TCP
             - containerPort: 9645
               protocol: TCP
-          env:
-            - name: POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-            - name: OP_NODE_P2P_PRIV_PATH
-              value: "/vault/secrets/$(POD_NAME).txt"
           envFrom:
             - secretRef:
                 name: {{ template "vsl-chain.node.fullname" .}}
