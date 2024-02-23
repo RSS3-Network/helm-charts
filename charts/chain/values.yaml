@@ -106,6 +106,17 @@ proposer:
     # Overrides the image tag whose default is the chart appVersion.
     tag: a77d1f52fc3492bf21915bdff8ee8e0b5bd2cb8a
   # -- Annotations for the all deployed Deployments
+  serviceAccount:
+    # -- Create server service account
+    create: true
+    # -- Server service account name
+    name: proposer
+    # -- Annotations applied to created service account
+    annotations: { }
+    # -- Labels applied to created service account
+    labels: { }
+    # -- Automount API credentials for the Service Account
+    automountServiceAccountToken: true
   deploymentAnnotations: {}
   # -- Annotations for the all deployed pods
   podAnnotations: {}
@@ -119,6 +130,17 @@ batcher:
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: a77d1f52fc3492bf21915bdff8ee8e0b5bd2cb8a
+  serviceAccount:
+    # -- Create server service account
+    create: true
+    # -- Server service account name
+    name: batcher
+    # -- Annotations applied to created service account
+    annotations: { }
+    # -- Labels applied to created service account
+    labels: { }
+    # -- Automount API credentials for the Service Account
+    automountServiceAccountToken: true
   # -- Annotations to be added to server Deployment
   deploymentAnnotations: { }
   # -- Annotations to be added to server pods
@@ -134,14 +156,3 @@ signer:
     tag: sha-147c0ce
 
     imagePullSecrets: [ ]
-  serviceAccount:
-    # -- Create server service account
-    create: true
-    # -- Server service account name
-    name: signer
-    # -- Annotations applied to created service account
-    annotations: { }
-    # -- Labels applied to created service account
-    labels: { }
-    # -- Automount API credentials for the Service Account
-    automountServiceAccountToken: true
