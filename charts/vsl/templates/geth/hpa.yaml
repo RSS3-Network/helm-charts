@@ -1,0 +1,32 @@
+{{- if .Values.geth.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ template "vsl-chain.geth.fullname" .}}
+  labels:
+    {{- include "vsl-chain.labels" (dict "context" . "component" .Values.geth.name "name" .Values.geth.name) | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: StatefulSet
+    name: {{ include "vsl-chain.fullname" . }}
+  minReplicas: {{ .Values.geth.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.geth.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.geth.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.geth.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.geth.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.geth.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}

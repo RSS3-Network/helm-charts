@@ -1,0 +1,147 @@
+# Default values for vsl-chain.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# livenessProbe:
+#   httpGet:
+#     path: /
+#     port: http
+# readinessProbe:
+#   httpGet:
+#     path: /
+#     port: http
+
+## Globally shared configuration
+global:
+  # -- Annotations for the all deployed Deployments
+  deploymentAnnotations: {}
+  # -- Annotations for the all deployed pods
+  podAnnotations: {}
+  service:
+    type: ClusterIP
+    port: 80
+    # nodePort only can be set with type NodePort
+    # nodePort:
+
+nameOverride: ""
+fullnameOverride: ""
+
+## Op-Geth
+geth:
+  # -- VSL chain op-geth name
+  name: geth
+  genesisJsonPath: 
+  replicaCount: 3
+
+  image:
+    repository: rss3/op-geth
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: rss3-main-1ecad30
+
+  serviceAccount:
+    # -- Create server service account
+    create: true
+    # -- Server service account name
+    name: geth
+    # -- Annotations applied to created service account
+    annotations: { }
+    # -- Labels applied to created service account
+    labels: { }
+    # -- Automount API credentials for the Service Account
+    automountServiceAccountToken: true
+  # -- Annotations for the all deployed Deployments
+  deploymentAnnotations: {}
+  # -- Annotations for the all deployed pods
+  podAnnotations: {}
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+  ingress:
+    enabled: false
+    className: ""
+    annotations: { }
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: chart-example.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: [ ]
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+  service:
+    type: ClusterIP
+    port: 80
+    # nodePort only can be set with type NodePort
+    # nodePort:
+    
+## Op-Node
+node:
+  # -- VSL chain op-node name
+  name: node
+  rollupJsonPath: 
+  image:
+    repository: rss3/op-node
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: a77d1f52fc3492bf21915bdff8ee8e0b5bd2cb8a
+  # -- Annotations for the all deployed Deployments
+  deploymentAnnotations: {}
+  # -- Annotations for the all deployed pods
+  podAnnotations: {}
+
+## proposer
+proposer:
+  # -- VSL chain proposer name
+  name: proposer
+  image:
+    repository: rss3/op-proposer
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: a77d1f52fc3492bf21915bdff8ee8e0b5bd2cb8a
+  # -- Annotations for the all deployed Deployments
+  deploymentAnnotations: {}
+  # -- Annotations for the all deployed pods
+  podAnnotations: {}
+  
+## batcher
+batcher:
+  # -- VSL chain batcher name
+  name: batcher
+  image:
+    repository: rss3/op-batcher
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: a77d1f52fc3492bf21915bdff8ee8e0b5bd2cb8a
+  # -- Annotations to be added to server Deployment
+  deploymentAnnotations: { }
+  # -- Annotations to be added to server pods
+  podAnnotations: { }
+
+## signer
+signer:
+  name: signer
+  image:
+    repository: ghcr.io/rss3-network/signer-js
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: sha-147c0ce
+
+    imagePullSecrets: [ ]
+  serviceAccount:
+    # -- Create server service account
+    create: true
+    # -- Server service account name
+    name: signer
+    # -- Annotations applied to created service account
+    annotations: { }
+    # -- Labels applied to created service account
+    labels: { }
+    # -- Automount API credentials for the Service Account
+    automountServiceAccountToken: true

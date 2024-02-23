@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  {{- with (mergeOverwrite (deepCopy .Values.global.deploymentAnnotations) .Values.batcher.deploymentAnnotations) }}
+  annotations:
+    {{- range $key, $value := . }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+  name: {{ template "vsl-chain.batcher.fullname" .}}
+  labels:
+    {{- include "vsl-chain.labels" (dict "context" . "component" .Values.batcher.name "name" .Values.batcher.name) | nindent 4 }}
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: {{ template "vsl-chain.batcher.fullname" .}}
+  template:
+    metadata:
+      name: {{ template "vsl-chain.batcher.fullname" .}}
+      labels:
+        app: {{ template "vsl-chain.batcher.fullname" .}}
+    spec:
+      containers:
+        - name: batcher
+          image: {{ .Values.batcher.image.repository }}:{{ .Values.batcher.image.tag }}
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: {{ template "vsl-chain.batcher.fullname" .}}
+          ports:
+            - containerPort: 6062
+              protocol: TCP
+            - containerPort: 6545
+              protocol: TCP
+            - containerPort: 7302
+              protocol: TCP
+        - name: batcher-signer
+          image: {{ .Values.signer.image.repository }}:{{ .Values.signer.image.tag }}
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: {{ template "vsl-chain.batcher.fullname" .}}-signer
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+      restartPolicy: Always

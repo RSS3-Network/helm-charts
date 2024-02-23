@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Service
+metadata:
+  {{- with (mergeOverwrite (deepCopy .Values.global.deploymentAnnotations) .Values.geth.deploymentAnnotations) }}
+  annotations:
+    {{- range $key, $value := . }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+  name: {{ template "vsl-chain.geth.fullname" .}}-write
+  labels:
+    {{- include "vsl-chain.labels" (dict "context" . "component" .Values.geth.name "name" .Values.geth.name) | nindent 4 }}
+spec:
+  selector:
+    {{- include "vsl-chain.selectorLabels" (dict "context" . "name" .Values.geth.name) | nindent 4 }}
+    statefulset.kubernetes.io/pod-name: {{ template "vsl-chain.geth.fullname" .}}-0
+  ports:
+    - protocol: TCP
+      port: 8551
+      targetPort: 8551
+      name: auth
+    - protocol: TCP
+      port: 8545
+      targetPort: 8545
+      name: public
+  clusterIP: None
+---
+apiVersion: v1
+kind: Service
+metadata:
+  {{- with (mergeOverwrite (deepCopy .Values.global.deploymentAnnotations) .Values.geth.deploymentAnnotations) }}
+  annotations:
+    {{- range $key, $value := . }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+  name: {{ template "vsl-chain.geth.fullname" .}}-read
+  labels:
+    {{- include "vsl-chain.labels" (dict "context" . "component" .Values.geth.name "name" .Values.geth.name) | nindent 4 }}
+spec:
+  selector:
+    {{- include "vsl-chain.selectorLabels" (dict "context" . "name" .Values.geth.name) | nindent 4 }}
+    enabled: "true"
+  ports:
+    - protocol: TCP
+      port: 8551
+      targetPort: 8551
+      name: auth
+    - protocol: TCP
+      port: 8545
+      targetPort: 8545
+      name: public
+  type: ClusterIP
