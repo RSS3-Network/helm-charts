@@ -114,7 +114,7 @@ spec:
                 /scripts/node-entrypoint.sh \
                  --sequencer.enabled=true \
                  --sequencer.stopped=true \
-                 --p2p.sequencer.key=173920e3721722d2eb2850ef5a5248037153e4e551475fa69dab266a5549367b;
+                 --p2p.sequencer.key=${_OP_NODE_P2P_SEQUENCER_KEY};
               else
                 /scripts/node-entrypoint.sh;
               fi
