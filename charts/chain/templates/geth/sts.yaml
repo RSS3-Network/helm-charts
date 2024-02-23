@@ -61,10 +61,10 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - |
-              curl -o /config/rollup.json {{ .Values.geth.rollup_json_url }};
-              ls -l /config/rollup.json;
-              curl -o /config/genesis.json {{ .Values.geth.genesis_json_url }};
+              curl -o /config/genesis.json {{ .Values.geth.genesisJsonPath }};
               ls -l /config/genesis.json;
+              curl -o /config/rollup.json {{ .Values.node.rollupJsonPath }};
+              ls -l /config/rollup.json;
           volumeMounts:
             - mountPath: /config
               name: config
