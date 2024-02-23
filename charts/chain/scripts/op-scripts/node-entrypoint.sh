@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -eux
 
 # wait until local geth comes up (authed so will return 401 without token)
