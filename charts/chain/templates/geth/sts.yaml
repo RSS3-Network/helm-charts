@@ -92,7 +92,7 @@ spec:
                 /scripts/geth-entrypoint.sh;
               else
                 /scripts/geth-entrypoint.sh \
-                 --rollup.sequencerhttp=${_GETH_ROLLUP_SEQUENCERHTTP};
+                 --rollup.sequencerhttp={{ (include "vsl-chain.geth.fullname" .) | printf "\"http://%s-write:8545\"" }};
               fi
           ports:
             - containerPort: 8645
