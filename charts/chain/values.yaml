@@ -86,6 +86,7 @@ node:
   # -- VSL chain op-node name
   name: node
   rollupJsonPath: 
+  sequencerStopped: true
   image:
     repository: rss3/op-node
     pullPolicy: IfNotPresent

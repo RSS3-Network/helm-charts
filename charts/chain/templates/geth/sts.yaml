@@ -109,7 +109,7 @@ spec:
               if [ "$SET_INDEX" -eq 0 ]; then
                 /scripts/node-entrypoint.sh \
                  --sequencer.enabled=true \
-                 --sequencer.stopped=false \
+                 --sequencer.stopped={{ .Values.node.sequencerStopped }} \
                  --p2p.sequencer.key=${_OP_NODE_P2P_SEQUENCER_KEY} \
                  --rpc.enable-admin=${_OP_NODE_RPC_ENABLE_ADMIN} \
                  --rpc.admin-state=${_OP_NODE_RPC_ADMIN_STATE};
