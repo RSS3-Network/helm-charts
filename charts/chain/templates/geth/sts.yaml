@@ -14,7 +14,6 @@ spec:
   {{- if not .Values.geth.autoscaling.enabled }}
   replicas: {{ .Values.geth.replicaCount }}
   {{- end }}
-  revisionHistoryLimit: {{ .Values.global.revisionHistoryLimit }}
   selector:
     matchLabels:
       {{- include "vsl-chain.selectorLabels" (dict "context" . "name" .Values.geth.name) | nindent 6 }}
@@ -26,26 +25,16 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/configmap: {{ include "vsl-chain.globalConfigCheckSum" .}}
       {{- with (mergeOverwrite (deepCopy .Values.global.podAnnotations) .Values.geth.podAnnotations) }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
         {{- include "vsl-chain.labels" (dict "context" . "component" .Values.geth.name "name" .Values.geth.name) | nindent 8 }}
-	{{- with .Values.geth.podLabels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
         enabled: "true"
     spec:
-      {{- with .Values.geth.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       {{- if .Values.geth.serviceAccount.create }}
       serviceAccountName: {{ include "vsl-chain.geth.serviceAccountName" . }}
       {{- end }}
-      securityContext:
-        {{- toYaml .Values.geth.podSecurityContext | nindent 8 }}
       volumes:
         - name: config
           emptyDir: { }
