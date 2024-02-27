@@ -1,5 +1,5 @@
 {{- $processedDict := dict -}}
-{{- range $path, $bytes := .Files.Glob "scripts/**" }}
+{{- range $path, $bytes := .Files.Glob "resources/**" }}
 {{- $name := base (dir $path) }}
 {{- if not (hasKey $processedDict $name) -}}
 {{ $_ := set $processedDict $name "true" }}
@@ -8,7 +8,7 @@ kind: ConfigMap
 metadata:
     name: {{ $name }}
 data:
-{{ ($.Files.Glob (printf "scripts/%s/*" $name)).AsConfig | indent 2 }}
+{{ ($.Files.Glob (printf "resources/%s/*" $name)).AsConfig | indent 2 }}
 ---
 {{- end }}
 {{- end }}
