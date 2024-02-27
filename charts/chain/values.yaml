@@ -146,6 +146,16 @@ batcher:
   # -- Annotations to be added to server pods
   podAnnotations: { }
 
+## proxyd
+proxyd:
+  name: proxyd
+  enabled: false
+  image:
+    repository: rss3/proxyd
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: a77d1f52fc3492bf21915bdff8ee8e0b5bd2cb8a
+
 ## signer
 signer:
   name: signer

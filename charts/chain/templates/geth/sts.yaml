@@ -148,6 +148,15 @@ spec:
               name: scripts
             - mountPath: /op_log
               name: log
+        {{- if .Values.proxyd.enabled }}
+        - name: proxyd
+          image: {{ .Values.proxyd.image.repository }}:{{ .Values.proxyd.image.tag }}
+          command: ["/bin/sh", "-c"]
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: {{ template "vsl-chain.proxyd.fullname" .}}
+        {{- end }}
   volumeClaimTemplates:
     - apiVersion: v1
       kind: PersistentVolumeClaim

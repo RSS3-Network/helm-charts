@@ -99,6 +99,13 @@ Create vsl-chain node name and version as used by the chart label.
 {{- end -}}
 
 {{/*
+Create vsl-chain proxyd name and version as used by the chart label.
+*/}}
+{{- define "vsl-chain.proxyd.fullname" -}}
+{{- printf "%s-%s" (include "vsl-chain.fullname" .) .Values.proxyd.name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Create vsl-chain batcher name and version as used by the chart label.
 */}}
 {{- define "vsl-chain.batcher.fullname" -}}
