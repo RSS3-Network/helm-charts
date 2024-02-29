@@ -30,8 +30,12 @@ fullnameOverride: ""
 geth:
   # -- VSL chain op-geth name
   name: geth
-  genesisJsonPath: 
   replicaCount: 3
+  # -- Recovery is set to recover data volume of op-geth via GCP volume snapshot API
+  recovery: 
+    enabled: false
+    snapshotName:
+  genesisJsonPath:
 
   image:
     repository: rss3/op-geth

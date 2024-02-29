@@ -158,6 +158,9 @@ spec:
         resources:
           requests:
             storage: 500Gi
-
-
-
+        {{- if .Values.geth.recovery.enabled }}
+        dataSource:
+          kind: VolumeSnapshot
+          name: {{ .Values.geth.recovery.snapshotName }}
+          apiGroup: snapshot.storage.k8s.io
+        {{- end }}
