@@ -40,7 +40,7 @@ spec:
           emptyDir: { }
         - name: scripts
           configMap:
-            name: op-scripts
+            name: {{ template "vsl-chain.batcher.fullname" .}}-scripts
             defaultMode: 0755
         - name: log
           emptyDir: {}

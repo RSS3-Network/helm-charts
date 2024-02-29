@@ -6,7 +6,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-    name: {{ $name }}
+    name: {{ template "vsl-chain.fullname" .}}-{{ $name }}
 data:
 {{ ($.Files.Glob (printf "resources/%s/*" $name)).AsConfig | indent 2 }}
 ---
