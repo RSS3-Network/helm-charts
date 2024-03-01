@@ -1,3 +1,4 @@
+{{- $fullName := include "vsl-chain.fullname" . -}}
 {{- $processedDict := dict -}}
 {{- range $path, $bytes := .Files.Glob "resources/**" }}
 {{- $name := base (dir $path) }}
@@ -6,7 +7,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-    name: {{ template "vsl-chain.fullname" .}}-{{ $name }}
+    name: {{ $fullName }}-{{ $name }}
 data:
 {{ ($.Files.Glob (printf "resources/%s/*" $name)).AsConfig | indent 2 }}
 ---
