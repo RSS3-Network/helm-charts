@@ -38,6 +38,12 @@ spec:
       volumes:
         - name: config
           emptyDir: { }
+        {{- if .Values.proxyd.enabled }}
+        - name: proxyd-config
+          configMap:
+            name: {{ template "vsl-chain.fullname" .}}-proxyd
+            defaultMode: 0644
+        {{- end }}
         - name: scripts
           configMap:
             name: {{ template "vsl-chain.fullname" .}}-scripts
@@ -76,7 +82,7 @@ spec:
           args:
             - |
               SET_INDEX=${HOSTNAME##*-};
-              echo "Starting initializing for node $SET_INDEX";
+              echo "Starting initializing for geth $SET_INDEX";
               if [ "$SET_INDEX" -eq 0 ]; then
                 /scripts/geth-entrypoint.sh;
               else
@@ -141,6 +147,18 @@ spec:
         - name: proxyd
           image: {{ .Values.proxyd.image.repository }}:{{ .Values.proxyd.image.tag }}
           command: ["/bin/sh", "-c"]
+          args:
+            - |
+              SET_INDEX=${HOSTNAME##*-};
+              echo "Starting initializing for proxyd $SET_INDEX";
+              if [ "$SET_INDEX" -eq 0 ]; then
+                /bin/proxyd /etc/proxyd/opstack-write.toml
+              else
+                /bin/proxyd /etc/proxyd/opstack-read.toml
+              fi
+          volumeMounts:
+            - mountPath: /etc/proxyd
+              name: proxyd-config
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
