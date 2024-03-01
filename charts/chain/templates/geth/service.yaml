@@ -20,8 +20,8 @@ spec:
       targetPort: 8551
       name: auth
     - protocol: TCP
-      port: 8545
-      targetPort: 8545
+      port: 9045
+      targetPort: 9045
       name: public
   clusterIP: None
 ---
@@ -47,7 +47,7 @@ spec:
       targetPort: 8551
       name: auth
     - protocol: TCP
-      port: 8545
-      targetPort: 8545
+      port: 9045
+      targetPort: 9045
       name: public
   type: ClusterIP
