@@ -54,6 +54,14 @@ geth:
     labels: { }
     # -- Automount API credentials for the Service Account
     automountServiceAccountToken: true
+  # -- Resource limits and requests for the op-geth
+  resources:
+    requests:
+      memory: "4000Mi"
+      cpu: "2"
+    limits:
+      memory: "8000Mi"
+      cpu: "4"
   # -- Annotations for the all deployed Deployments
   deploymentAnnotations: {}
   # -- Annotations for the all deployed pods

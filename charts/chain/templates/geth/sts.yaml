@@ -95,6 +95,8 @@ spec:
             - containerPort: 7400
               protocol: TCP
               name: metrics
+          resources:
+            {{- toYaml .Values.geth.resources | nindent 12 }}
           envFrom:
             - secretRef:
                 name: {{ template "vsl-chain.geth.fullname" .}}
