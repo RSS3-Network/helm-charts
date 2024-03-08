@@ -35,6 +35,8 @@ geth:
   recovery: 
     enabled: false
     snapshotName:
+  # -- NetworkId is the Chain Id of VSL Chain, it's 12553 for mainnet, and 2331 for testnet 
+  networkId: 12553
   genesisJsonPath:
 
   image:
