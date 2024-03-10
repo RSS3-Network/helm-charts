@@ -1,0 +1,149 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "op-batcher.fullname" . }}
+  labels:
+    {{- include "op-batcher.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  serviceName: {{ include "op-batcher.fullname" . }}
+  selector:
+    matchLabels:
+      {{- include "op-batcher.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "op-batcher.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "op-batcher.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - op-batcher
+          ports:
+            - name: rpc
+              containerPort: {{ .Values.ports.rpc.port }}
+              protocol: TCP
+          {{- with .Values.ports }}
+            {{- if .pprof.enabled }}
+            - name: pprof
+              containerPort: {{ .pprof.port }}
+              protocol: TCP
+            {{- end }}
+            {{- if .metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .metrics.port }}
+              protocol: TCP
+            {{- end }}
+          {{- end }}
+          env:
+            - name: OP_BATCHER_L1_ETH_RPC
+              value: {{ .Values.config.l1.rpcAddr }}
+            - name: OP_BATCHER_L2_ETH_RPC
+              value: {{ .Values.config.l2.rpcAddr }}
+            - name: OP_BATCHER_ROLLUP_RPC
+              value: {{ .Values.config.l2.rollupAddr }}
+            - name: OP_BATCHER_MAX_CHANNEL_DURATION
+              value: {{ .Values.config.maxChannelDuration | quote }}
+            - name: OP_BATCHER_NUM_CONFIRMATIONS
+              value: {{ .Values.config.numConfirmations | quote }}
+            - name: OP_BATCHER_LOG_LEVEL
+              value: {{ .Values.config.logLevel }}
+            {{- with .Values.ports }}
+            - name: OP_BATCHER_RPC_ENABLE_ADMIN
+              value: {{ .rpc.admin | quote }}
+            - name: OP_BATCHER_RPC_PORT
+              value: {{ .rpc.port | quote }}
+            - name: OP_BATCHER_PPROF_ENABLED
+              value: {{ .pprof.enabled | quote }}
+            - name: OP_BATCHER_PPROF_PORT
+              value: {{ .pprof.port | quote }}
+            - name: OP_BATCHER_METRICS_ENABLED
+              value: {{ .metrics.enabled | quote }}
+            - name: OP_BATCHER_METRICS_PORT
+              value: {{ .metrics.port | quote }}
+            {{- end }}
+            {{- if eq .Values.config.wallet.type "signer" }}
+            {{- with .Values.config.wallet.signer }}
+            - name: OP_BATCHER_SIGNER_TLS_CA
+              value: {{ .tls.ca }}
+            - name: OP_BATCHER_SIGNER_TLS_CERT
+              value: {{ .tls.cert }}
+            - name: OP_BATCHER_SIGNER_TLS_KEY
+              value: {{ .tls.key }}
+            - name:  OP_BATCHER_SIGNER_ENDPOINT
+              value: {{ .endpoint }}
+            - name: OP_BATCHER_SIGNER_ADDRESS
+              value: {{ .address }}
+            {{- end }}
+            {{- else }}
+            - name: OP_BATCHER_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: {{ .Values.config.wallet.privateKey.key }}
+                  name: {{ .Values.config.wallet.privateKey.secretName }}
+            {{- end }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- if eq .Values.config.wallet.type "signer" }}
+        - name: signer
+          {{- with .Values.config.wallet.signer }}
+          image: {{ .image.repository }}:{{ .image.tag }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          env:
+            - name: PORT
+              value: "3000"
+            {{- range $key, $value := .env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          {{- with .envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- end }}
+      {{- end }}
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
