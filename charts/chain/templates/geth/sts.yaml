@@ -166,21 +166,35 @@ spec:
             - configMapRef:
                 name: {{ template "vsl-chain.proxyd.fullname" .}}
         {{- end }}
+      {{- with .Values.geth.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.geth.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.geth.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
   volumeClaimTemplates:
     - apiVersion: v1
       kind: PersistentVolumeClaim
       metadata:
         name: data
       spec:
-        storageClassName: standard-rwo
+        {{- if .Values.geth.storage.persistentVolume.storageClass }}
+        storageClassName: {{ .Values.geth.storage.persistentVolume.storageClass | quote }}
+        {{- end }}
         accessModes:
           - ReadWriteOnce
         resources:
           requests:
-            storage: 500Gi
-        {{- if .Values.geth.recovery.enabled }}
+            storage: {{ .Values.geth.storage.persistentVolume.size | quote }}
+        {{- if .Values.geth.storage.recovery.enabled }}
         dataSource:
           kind: VolumeSnapshot
-          name: {{ .Values.geth.recovery.snapshotName }}
+          name: {{ .Values.geth.storage.recovery.snapshotName }}
           apiGroup: snapshot.storage.k8s.io
         {{- end }}

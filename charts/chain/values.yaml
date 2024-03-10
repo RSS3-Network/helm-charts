@@ -31,10 +31,6 @@ geth:
   # -- VSL chain op-geth name
   name: geth
   replicaCount: 3
-  # -- Recovery is set to recover data volume of op-geth via GCP volume snapshot API
-  recovery: 
-    enabled: false
-    snapshotName:
   # -- NetworkId is the Chain Id of VSL Chain, it's 12553 for mainnet, and 2331 for testnet 
   networkId: 12553
   genesisJsonPath:
@@ -94,6 +90,18 @@ geth:
     port: 80
     # nodePort only can be set with type NodePort
     # nodePort:
+
+  storage:
+    persistentVolume:
+      size: 500Gi
+      storageClass: standard-rwo
+    # -- Recovery is set to recover data volume of op-geth via GCP volume snapshot API
+    recovery:
+      enabled: false
+      snapshotName:
+  nodeSelector: {}
+  affinity: {}
+  tolerations: {}
     
 ## Op-Node
 node:
