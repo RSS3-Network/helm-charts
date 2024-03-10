@@ -172,12 +172,12 @@ spec:
       metadata:
         name: data
       spec:
-        storageClassName: standard-rwo
+        storageClassName: {{ .Values.geth.recovery.storageClassName }}
         accessModes:
           - ReadWriteOnce
         resources:
           requests:
-            storage: 500Gi
+            storage: {{ .Values.geth.recovery.storage }}
         {{- if .Values.geth.recovery.enabled }}
         dataSource:
           kind: VolumeSnapshot

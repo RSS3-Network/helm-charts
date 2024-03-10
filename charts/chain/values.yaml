@@ -32,8 +32,10 @@ geth:
   name: geth
   replicaCount: 3
   # -- Recovery is set to recover data volume of op-geth via GCP volume snapshot API
-  recovery: 
+  recovery:
     enabled: false
+    storage: 500Gi
+    storageClassName: standard-rwo
     snapshotName:
   # -- NetworkId is the Chain Id of VSL Chain, it's 12553 for mainnet, and 2331 for testnet 
   networkId: 12553
