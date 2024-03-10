@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "vsl-chain-node.fullname" . }}-headless
+  labels:
+    {{- include "vsl-chain-node.labels" . | nindent 4 }}
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+spec:
+  clusterIP: None
+  publishNotReadyAddresses: true
+  {{- with .Values.geth.ports}}
+  ports:
+    - protocol: TCP
+      port: {{ .auth.port }}
+      targetPort: {{ .auth.port }}
+      name: auth
+    {{- if .http.enable }}
+    - protocol: TCP
+      port: {{ .http.port }}
+      targetPort: {{ .http.port }}
+      name: http
+    {{- end }}
+    {{- if .websocket.enable }}
+    - protocol: TCP
+      port: {{ .websocket.port }}
+      targetPort: {{ .websocket.port }}
+      name: http
+    {{- end }}
+    {{- if .metric.enable }}
+    - protocol: TCP
+      port: {{ .metric.port }}
+      targetPort: {{ .metric.port }}
+      name: http
+    {{- end }}
+  {{- end }}
+  selector:
+    {{- include "vsl-chain-node.selectorLabels" . | nindent 4 }}
