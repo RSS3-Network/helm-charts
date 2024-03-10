@@ -31,6 +31,8 @@ geth:
   # -- VSL chain op-geth name
   name: geth
   replicaCount: 3
+  # -- RollupSequencerHttp is the sequencer rpc endpoint
+  rollupSequencerHttp: "https://sequencer.rss3.io"
   # -- Recovery is set to recover data volume of op-geth via GCP volume snapshot API
   recovery:
     enabled: false
