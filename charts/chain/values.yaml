@@ -109,7 +109,7 @@ node:
     repository: rss3/op-node
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: a77d1f52fc3492bf21915bdff8ee8e0b5bd2cb8a
+    tag: d2c5ced00901227473fc196fda838191f0cb4e02
   # -- Annotations for the all deployed Deployments
   deploymentAnnotations: {}
   # -- Annotations for the all deployed pods
@@ -123,7 +123,7 @@ proposer:
     repository: rss3/op-proposer
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: a77d1f52fc3492bf21915bdff8ee8e0b5bd2cb8a
+    tag: d2c5ced00901227473fc196fda838191f0cb4e02
   # -- Annotations for the all deployed Deployments
   serviceAccount:
     # -- Create server service account
@@ -148,7 +148,7 @@ batcher:
     repository: rss3/op-batcher
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: a77d1f52fc3492bf21915bdff8ee8e0b5bd2cb8a
+    tag: d2c5ced00901227473fc196fda838191f0cb4e02
   serviceAccount:
     # -- Create server service account
     create: true
@@ -173,7 +173,7 @@ proxyd:
     repository: rss3/proxyd
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: a77d1f52fc3492bf21915bdff8ee8e0b5bd2cb8a
+    tag: d2c5ced00901227473fc196fda838191f0cb4e02
 
 ## signer
 signer:
