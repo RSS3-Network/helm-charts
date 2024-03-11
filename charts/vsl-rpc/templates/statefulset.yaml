@@ -1,0 +1,384 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "vsl-rpc.fullname" . }}
+  labels:
+    {{- include "vsl-rpc.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ template "vsl-rpc.fullname" . }}
+  replicas: {{ .Values.replicaCount }}
+  updateStrategy: {{- toYaml .Values.updateStrategy | nindent 4 }}
+  podManagementPolicy: {{ .Values.podManagementPolicy}}
+  selector:
+    matchLabels:
+      {{- include "vsl-rpc.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "vsl-rpc.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "vsl-rpc.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: download-cfg
+          image: curlimages/curl
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              curl -o {{ .Values.geth.genesis.path }} {{ .Values.geth.genesis.url }};
+              curl -o {{ .Values.node.rollup.path }} {{ .Values.node.rollup.url }};
+          volumeMounts:
+            - mountPath: /config
+              name: config
+        - name: generate-key
+          image: openquantumsafe/openssl3
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              openssl rand -hex 32 > /config/opnode_p2p_priv.txt;
+              openssl rand -hex 32 > {{ .Values.jwt.path }};
+          volumeMounts:
+            - mountPath: /config
+              name: config
+      containers:
+        - name: geth
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.geth.image.repository }}:{{ .Values.geth.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.geth.image.pullPolicy }}
+          command: [ "/bin/sh", "-ecx" ]
+          args:
+            - >-
+              /scripts/geth-entrypoint.sh
+            {{- with .Values.sequencerhttp}}
+              --rollup.sequencerhttp={{ . }}
+            {{- end }}
+            {{- range .Values.geth.args }}
+              {{ . }}
+            {{- end }}
+          {{- with .Values.geth.ports }}
+          ports:
+            - containerPort: {{ .auth.port }}
+              protocol: TCP
+              name: auth
+          {{- if .http.enable }}
+            - containerPort: {{ .http.port }}
+              protocol: TCP
+              name: http
+          {{- end }}
+          {{- if .websocket.enable }}
+            - containerPort: {{ .websocket.port }}
+              protocol: TCP
+              name: ws
+          {{- end }}
+          {{- if .metric.enable }}
+            - containerPort: {{ .metric.port }}
+              protocol: TCP
+              name: metric
+          {{- end }}
+          {{- end }}
+          {{- with .Values.geth.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env:
+            - name: GETH_NETWORKID
+              value: {{ .Values.networkId | quote }}
+            - name: GENESIS_FILE_PATH
+              value: {{ .Values.geth.genesis.path }}
+            - name: GETH_DATADIR
+              value: {{ .Values.geth.dataDir }}
+            - name: GETH_AUTHRPC_ADDR
+              value: {{ .Values.geth.ports.auth.addr }}
+            - name: GETH_AUTHRPC_PORT
+              value: {{ .Values.geth.ports.auth.port | quote }}
+            - name: GETH_AUTHRPC_JWTSECRET
+              value: {{ .Values.jwt.path }}
+            - name: GETH_AUTHRPC_VHOSTS
+              value: {{ .Values.geth.ports.auth.vhosts | quote}}
+
+            - name: GETH_HTTP
+              value: {{ .Values.geth.ports.http.enable | quote }}
+            {{- if .Values.geth.ports.http.enable }}
+            - name: GETH_HTTP_ADDR
+              value: {{ .Values.geth.ports.http.addr | quote }}
+            - name: GETH_HTTP_PORT
+              value: {{ .Values.geth.ports.http.port | quote }}
+            - name: GETH_HTTP_API
+              value: {{ .Values.geth.ports.http.api | quote }}
+            - name: GETH_HTTP_VHOSTS
+              value: {{ .Values.geth.ports.http.vhosts | quote }}
+            - name: GETH_HTTP_CORSDOMAIN
+              value: {{ .Values.geth.ports.http.cors | quote }}
+            {{- end }}
+            - name: GETH_WS
+              value: {{ .Values.geth.ports.websocket.enable | quote }}
+            {{- if .Values.geth.ports.websocket.enable }}
+            - name: GETH_WS_ADDR
+              value: {{ .Values.geth.ports.websocket.addr | quote }}
+            - name: GETH_WS_PORT
+              value: {{ .Values.geth.ports.websocket.port | quote }}
+            - name: GETH_WS_API
+              value: {{ .Values.geth.ports.websocket.api | quote }}
+            - name: GETH_WS_ORIGINS
+              value: {{ .Values.geth.ports.websocket.origins | quote }}
+            {{- end }}
+            - name: GETH_METRICS
+              value: {{ .Values.geth.ports.metric.enable | quote }}
+            {{- if .Values.geth.ports.metric.enable }}
+            - name: GETH_METRICS_ADDR
+              value: {{ .Values.geth.ports.metric.addr }}
+            - name: GETH_METRICS_PORT
+              value: {{ .Values.geth.ports.metric.port | quote }}
+            {{- end }}
+            - name: GETH_VERBOSITY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.geth" .}}
+                  key: verbosity
+                  optional: true
+            - name: GETH_NODISCOVER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.geth" .}}
+                  key: nodiscover
+                  optional: true
+            - name: GETH_MAXPEERS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.geth" .}}
+                  key: maxpeers
+                  optional: true
+            - name: GETH_ROLLUP_DISABLETXPOOLGOSSIP
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.geth" .}}
+                  key: rollup.disabletxpoolgossip
+                  optional: true
+            - name: GETH_RPC_ALLOW_UNPROTECTED_TXS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.geth" .}}
+                  key: rpc.allow-unprotected-txs
+                  optional: true
+            - name: GETH_SYNCMOD
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.geth" .}}
+                  key: syncmode
+                  optional: true
+            - name: GETH_GCMODE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.geth" .}}
+                  key: gcmode
+                  optional: true
+          {{- with .Values.geth.env }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          livenessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 120
+          readinessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.geth.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /config
+              name: config
+            - mountPath: /scripts
+              name: scripts
+            - mountPath: {{ .Values.geth.dataDir }}
+              name: data
+          {{- with .Values.geth.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        - name: node
+          image: {{ .Values.node.image.repository }}:{{ .Values.node.image.tag }}
+          imagePullPolicy: {{ .Values.node.image.pullPolicy }}
+          command: ["/bin/sh", "-ecx"]
+          args:
+            - >-
+              /scripts/node-entrypoint.sh
+              {{- range .Values.node.args }}
+                {{ . }}
+              {{- end }}
+          ports:
+            - containerPort: {{ .Values.node.ports.rpc.port }}
+              protocol: TCP
+              name: rpc
+            - containerPort: {{ .Values.node.ports.p2p.port }}
+              protocol: TCP
+              name: p2p-tcp
+            - containerPort: {{ .Values.node.ports.p2p.port }}
+              protocol: UDP
+              name: p2p-udp
+          env:
+            - name: OP_NODE_ROLLUP_CONFIG
+              value: {{ .Values.node.rollup.path }}
+            - name: OP_NODE_L2_ENGINE_AUTH
+              value: {{ .Values.jwt.path }}
+            - name: OP_NODE_L2_ENGINE_RPC
+              value: {{ printf "http://localhost:%d" (.Values.geth.ports.auth.port | int) }}
+            - name: OP_NODE_RPC_ADDR
+              value: {{ .Values.node.ports.rpc.addr }}
+            - name: OP_NODE_RPC_PORT
+              value: {{ .Values.node.ports.rpc.port | quote }}
+            - name: OP_NODE_P2P_LISTEN_IP
+              value: {{ .Values.node.ports.p2p.addr }}
+            - name: OP_NODE_P2P_LISTEN_TCP_PORT
+              value: {{ .Values.node.ports.p2p.port | quote }}
+            - name: OP_NODE_P2P_LISTEN_UDP_PORT
+              value: {{ .Values.node.ports.p2p.port | quote }}
+            - name: OP_NODE_METRICS_ENABLED
+              value: {{ .Values.node.ports.metric.enable | quote }}
+            {{- if .Values.node.ports.metric.enable }}
+            - name: OP_NODE_METRICS_ADDR
+              value: {{ .Values.node.ports.metric.addr }}
+            - name: OP_NODE_METRICS_PORT
+              value:  {{ .Values.node.ports.metric.port | quote }}
+            {{- end }}
+            - name: OP_NODE_SNAPSHOT_LOG
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.node" .}}
+                  key: snapshotlog.file
+                  optional: true
+            - name: OP_NODE_P2P_PRIV_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.node" .}}
+                  key: p2p.priv.path
+                  optional: true
+            - name: OP_NODE_P2P_PEERSTORE_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.node" .}}
+                  key: p2p.peerstore.path
+                  optional: true
+            - name: OP_NODE_P2P_DISCOVERY_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.node" .}}
+                  key: p2p.discovery.path
+            - name: OP_NODE_P2P_AGENT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.node" .}}
+                  key: p2p.agent
+                  optional: true
+            - name: OP_NODE_P2P_PEER_BANNING
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.node" .}}
+                  key: p2p.ban.peers
+                  optional: true
+            - name: OP_NODE_LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.node" .}}
+                  key: log.level
+                  optional: true
+            - name: OP_NODE_LOG_FORMAT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.node" .}}
+                  key: log.format
+                  optional: true
+          {{- with .Values.node.env }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.node.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - mountPath: /config
+              name: config
+            - mountPath: /scripts
+              name: scripts
+            - mountPath: /op_log
+              name: log
+          {{- with .Values.node.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- if .Values.proxyd.enabled }}
+        - name: proxyd
+          image: {{ .Values.proxyd.image.repository }}:{{ .Values.proxyd.image.tag }}
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              SET_INDEX=${HOSTNAME##*-};
+              echo "Starting initializing for proxyd $SET_INDEX";
+              if [ "$SET_INDEX" -eq 0 ]; then
+                /bin/proxyd /etc/proxyd/opstack-write.toml
+              else
+                /bin/proxyd /etc/proxyd/opstack-read.toml
+              fi
+          volumeMounts:
+            - mountPath: /etc/proxyd
+              name: proxyd-config
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: {{ template "vsl-chain.proxyd.fullname" . }}
+        {{- end }}
+      volumes:
+        - name: config
+          emptyDir:
+            medium: Memory
+        - name: scripts
+          configMap:
+            name: {{ template "vsl-rpc.scripts.name" . }}
+            defaultMode: 493
+        - name: log
+          emptyDir: {}
+      {{- with .Values.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  volumeClaimTemplates:
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: data
+      spec:
+        storageClassName: {{ .Values.storage.persistentVolume.storageClass | quote }}
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: {{ .Values.storage.persistentVolume.size | quote }}
+        {{- if .Values.storage.recovery.enabled }}
+        dataSource:
+          kind: VolumeSnapshot
+          name: {{ .Values.geth.recovery.snapshotName }}
+          apiGroup: snapshot.storage.k8s.io
+        {{- end }}

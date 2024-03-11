@@ -1,0 +1,14 @@
+{{- if .Values.configs.node.create }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "vsl-rpc.config-name.node" . }}
+  {{- with .Values.configs.node.annotations }}
+  annotations:
+    {{- range $key, $value := .}}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+data:
+  {{- include "vsl-rpc.config.node" . | trim | nindent 2}}
+{{- end }}
