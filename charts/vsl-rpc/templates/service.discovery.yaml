@@ -25,13 +25,13 @@ spec:
     - protocol: TCP
       port: {{ .websocket.port }}
       targetPort: {{ .websocket.port }}
-      name: http
+      name: websocket
     {{- end }}
     {{- if .metric.enable }}
     - protocol: TCP
       port: {{ .metric.port }}
       targetPort: {{ .metric.port }}
-      name: http
+      name: metric
     {{- end }}
   {{- end }}
   selector:
