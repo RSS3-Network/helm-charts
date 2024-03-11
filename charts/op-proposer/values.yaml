@@ -15,10 +15,10 @@ fullnameOverride: ""
 config:
   logLevel: debug
   l1:
-    rpcAddr: ""
+    rpcAddr: "http://l1-rpc"
   l2:
-    rollupAddr: ""
-    outputOracleAddr: ""
+    rollupAddr: "http://l2-rollup"
+    outputOracleAddr: "http://l2oo"
   pollInterval: "12s"
   allowNonFinalized: true
   wallet:
@@ -29,10 +29,10 @@ config:
       key: ""
     signer:
       image:
-        repository: rss3/op-proposer
+        repository: ghcr.io/rss3-network/signer-js
         pullPolicy: IfNotPresent
         # Overrides the image tag whose default is the chart appVersion.
-        tag: a77d1f52fc3492bf21915bdff8ee8e0b5bd2cb8a
+        tag: sha-147c0ce
       imagePullSecrets: [ ]
 
       envFrom: {}
@@ -47,14 +47,14 @@ config:
 
 ports:
   rpc:
-    admin:
-    port:
+    admin: true
+    port: 6565
   pprof:
     enabled: true
-    port: 6062
+    port: 6060
   metrics:
     enabled: true
-    port:
+    port: 7300
 
 serviceAccount:
   # Specifies whether a service account should be created

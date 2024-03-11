@@ -83,15 +83,15 @@ spec:
             {{- if eq .Values.config.wallet.type "signer" }}
             {{- with .Values.config.wallet.signer }}
             - name: OP_PROPOSER_SIGNER_TLS_CA
-              value: {{ .tls.ca }}
+              value: {{ .tls.ca | quote }}
             - name: OP_PROPOSER_SIGNER_TLS_CERT
-              value: {{ .tls.cert }}
+              value: {{ .tls.cert | quote }}
             - name: OP_PROPOSER_SIGNER_TLS_KEY
-              value: {{ .tls.key }}
+              value: {{ .tls.key | quote }}
             - name:  OP_PROPOSER_SIGNER_ENDPOINT
-              value: {{ .endpoint }}
+              value: {{ .endpoint | quote }}
             - name: OP_PROPOSER_SIGNER_ADDRESS
-              value: {{ .address }}
+              value: {{ .address | quote }}
             {{- end }}
             {{- else }}
             - name: OP_PROPOSER_PRIVATE_KEY

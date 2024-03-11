@@ -59,7 +59,6 @@ spec:
           image: "{{ .Values.geth.image.repository }}:{{ .Values.geth.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.geth.image.pullPolicy }}
           command: [ "/bin/sh", "-ecx" ]
-          {{- if or .Values.sequencerhttp .Values.geth.args}}
           args:
             - >-
               /scripts/geth-entrypoint.sh
@@ -69,7 +68,6 @@ spec:
             {{- range .Values.geth.args }}
               {{ . }}
             {{- end }}
-          {{- end }}
           {{- with .Values.geth.ports }}
           ports:
             - containerPort: {{ .auth.port }}
@@ -187,8 +185,8 @@ spec:
                   name: {{ include "vsl-rpc.config-name.geth" .}}
                   key: gcmode
                   optional: true
-          {{- range $key, $value := .Values.geth.env }}
-            {{- toYaml . | nindent 10 }}
+          {{- with .Values.geth.env }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           livenessProbe:
             tcpSocket:
@@ -304,9 +302,8 @@ spec:
                   name: {{ include "vsl-rpc.config-name.node" .}}
                   key: log.format
                   optional: true
-          {{- range $key, $value := .Values.node.env }}
-            - name: {{ $key }}
-              value: {{ $value | quote }}
+          {{- with .Values.node.env }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with .Values.node.envFrom }}
           envFrom:

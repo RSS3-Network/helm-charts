@@ -24,9 +24,9 @@ version: 0.1.0
 appVersion: "1.16.0"
 
 dependencies:
-  - name: vsl-node
+  - name: vsl-rpc
     version: "0.1.0"
-    repository: "file://../vsl-node"
+    repository: "file://../vsl-rpc"
     alias: sequencer
   - name: op-batcher
     version: "0.1.0"

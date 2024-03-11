@@ -83,7 +83,7 @@ Geth Configuration Values
 {{- range $key, $value := $config }}
 {{- $fmted := $value | toString }}
 {{- if not (eq $fmted "") }}
-{{ $key }}: {{ $fmted | toYaml }}
+{{ $key }}: {{ $fmted | quote }}
 {{- end }}
 {{- end }}
 {{- end -}}
@@ -103,7 +103,7 @@ Node Configuration Values
 {{- range $key, $value := $config }}
 {{- $fmted := $value | toString }}
 {{- if not (eq $fmted "") }}
-{{ $key }}: {{ $fmted | toYaml }}
+{{ $key }}: {{ $fmted | quote }}
 {{- end }}
 {{- end }}
 {{- end -}}
