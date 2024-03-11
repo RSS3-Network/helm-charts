@@ -1,15 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "vsl-rpc.fullname" . }}-headless
+  name: {{ template "vsl-rpc.fullname" . }}-geth
   labels:
     {{- include "vsl-rpc.labels" . | nindent 4 }}
+  {{- with .Values.service.annotations }}
   annotations:
-    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
-  clusterIP: None
-  publishNotReadyAddresses: true
-  {{- with .Values.geth.ports}}
+  type: {{ .Values.service.type }}
+  {{- with .Values.geth.ports }}
   ports:
     - protocol: TCP
       port: {{ .auth.port }}
