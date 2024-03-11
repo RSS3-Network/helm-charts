@@ -1,0 +1,14 @@
+{{- if .Values.configs.geth.create }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "vsl-rpc.config-name.geth" . }}
+  {{- with .Values.configs.geth.annotations }}
+  annotations:
+    {{- range $key, $value := .}}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+data:
+  {{- include "vsl-rpc.config.geth" . | trim | nindent 2}}
+{{- end }}

@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "vsl-rpc.scripts.name" . }}
+data:
+  geth-entrypoint.sh: |-
+    #!/bin/sh
+    set -exu
+
+    GETH_CHAINDATA_DIR="$GETH_DATADIR/geth/chaindata"
+    GENESIS_FILE_PATH="${GENESIS_FILE_PATH:-/config/genesis.json}"
+    echo "================================================"
+    echo "Chain ID: $GETH_NETWORKID"
+    echo "================================================"
+    if [ ! -d "$GETH_CHAINDATA_DIR" ]; then
+    	echo "$GETH_CHAINDATA_DIR missing, running init"
+    	echo "Initializing genesis."
+    	geth --verbosity=4 init \
+    		--datadir="$GETH_DATADIR" \
+    		"$GENESIS_FILE_PATH"
+    else
+    	echo "$GETH_CHAINDATA_DIR exists."
+    fi
+
+    # Warning: Archive mode is required, otherwise old trie nodes will be
+    # pruned within minutes of starting the devnet.
+
+    exec geth "$@"
+
+  node-entrypoint.sh: |
+    #!/bin/sh
+    set -eux
+
+    # wait until local geth comes up (authed so will return 401 without token)
+    until [ "$(curl -s -w '%{http_code}' -o /dev/null "${OP_NODE_L2_ENGINE_RPC}")" -eq 401 ]; do
+      echo "waiting for geth to be ready"
+      sleep 5
+    done
+
+    # # public-facing P2P node, advertise public IP address
+    # PUBLIC_IP=$(curl -s v4.ident.me)
+    # export OP_NODE_P2P_ADVERTISE_IP=$PUBLIC_IP
+    exec op-node "$@"

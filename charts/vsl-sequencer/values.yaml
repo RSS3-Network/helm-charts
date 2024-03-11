@@ -1,0 +1,16 @@
+# Default values for vsl-sequencer.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+sequencer:
+  geth:
+    command:
+  node:
+    env:
+      - name:
+    args:
+      - --sequencer.enabled=true \
+      - --sequencer.stopped={{ .Values.node.sequencerStopped }} \
+      - --p2p.sequencer.key=${_OP_NODE_P2P_SEQUENCER_KEY} \
+      - --rpc.enable-admin=${_OP_NODE_RPC_ENABLE_ADMIN} \
+      - --rpc.admin-state=${_OP_NODE_RPC_ADMIN_STATE};

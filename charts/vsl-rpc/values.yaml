@@ -1,4 +1,4 @@
-# Default values for vsl-chain-node.
+# Default values for vsl-rpc.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -10,11 +10,13 @@ fullnameOverride: ""
 
 updateStrategy:
   type: RollingUpdate
+podManagementPolicy: Parallel
 
 networkId: 12553
 
 jwt:
   path: "/config/jwt-secret.txt"
+sequencerhttp: "http://sequencer"
 
 geth:
   genesis:
@@ -27,17 +29,12 @@ geth:
   # - name: foo
   #   mountPath: "/etc/foo"
   #   readOnly: true
-  env:
-    GETH_VERBOSITY: "3"
-    GETH_NODISCOVER: "true"
-    GETH_MAXPEERS: "0"
-    GETH_ROLLUP_DISABLETXPOOLGOSSIP: "true"
-    # Allow for unprotected (non EIP155 signed) transactions to be submitted via RPC
-    GETH_RPC_ALLOW_UNPROTECTED_TXS: "true"
-    GETH_SYNCMODE: "full"
-    # Blockchain garbage collection mode, only relevant in state.scheme: hash ("full","archive")
-    GETH_GCMODE: "archive"
-  envFrom: {}
+  env: []
+  # - name: GETH_EXAMPLE_KEY
+  #   value: example-value
+
+  envFrom: []
+  args: []
   image:
     repository: rss3/op-geth
     pullPolicy: IfNotPresent
@@ -90,7 +87,7 @@ node:
     repository: rss3/op-node
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: a77d1f52fc3492bf21915bdff8ee8e0b5bd2cb8a
+    tag: d2c5ced00901227473fc196fda838191f0cb4e02
   ports:
     rpc:
       addr: "0.0.0.0"
@@ -102,15 +99,9 @@ node:
       enable: true
       addr: "0.0.0.0"
       port: 7301
-  env:
-    OP_NODE_SNAPSHOT_LOG: "/op_log/snapshot.log"
-    OP_NODE_P2P_PRIV_PATH: "/config/opnode_p2p_priv.txt"
-    OP_NODE_P2P_PEERSTORE_PATH: "/op_log/opnode_peerstore_db"
-    OP_NODE_P2P_DISCOVERY_PATH: "/op_log/opnode_discovery_db"
-    OP_NODE_P2P_AGENT: "rss3-vsl"
-    OP_NODE_P2P_PEER_BANNING: "true"
-    OP_NODE_LOG_LEVEL: "debug"
-  envFrom: {}
+  env: []
+  envFrom: []
+  args: []
   resources: { }
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
@@ -130,12 +121,36 @@ proxyd:
     repository: rss3/proxyd
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: a77d1f52fc3492bf21915bdff8ee8e0b5bd2cb8a
+    tag: d2c5ced00901227473fc196fda838191f0cb4e02
 
   ports:
     rpc:
       addr: "0.0.0.0"
       port: 9045
+
+configs:
+  geth:
+    create: true
+    annotations: {}
+
+    verbosity: 3
+    nodiscover: true
+    maxpeers: 0
+    rollup.disabletxpoolgossip: true
+    gcmode: "archive"
+    rpc.allow-unprotected-txs: true
+    syncmode: "full"
+
+  node:
+    create: true
+    annotations: {}
+
+    snapshotlog.file: "/op_log/snapshot.log"
+    p2p.priv.path: "/config/opnode_p2p_priv.txt"
+    p2p.peerstore.path: "/op_log/opnode_peerstore_db"
+    p2p.discovery.path: "/op_log/opnode_discovery_db"
+    p2p.agent: "rss3-vsl"
+    p2p.ban.peers: true
 
 storage:
   hostPath: ""

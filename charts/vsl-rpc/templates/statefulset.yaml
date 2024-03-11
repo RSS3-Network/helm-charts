@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "vsl-chain-node.fullname" . }}
+  name: {{ include "vsl-rpc.fullname" . }}
   labels:
-    {{- include "vsl-chain-node.labels" . | nindent 4 }}
+    {{- include "vsl-rpc.labels" . | nindent 4 }}
 spec:
-  serviceName: {{ template "vsl-chain-node.fullname" . }}
+  serviceName: {{ template "vsl-rpc.fullname" . }}
   replicas: {{ .Values.replicaCount }}
   updateStrategy: {{- toYaml .Values.updateStrategy | nindent 4 }}
-  podManagementPolicy: OrderedReady
+  podManagementPolicy: {{ .Values.podManagementPolicy}}
   selector:
     matchLabels:
-      {{- include "vsl-chain-node.selectorLabels" . | nindent 6 }}
+      {{- include "vsl-rpc.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -19,7 +19,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "vsl-chain-node.labels" . | nindent 8 }}
+        {{- include "vsl-rpc.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -28,7 +28,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "vsl-chain-node.serviceAccountName" . }}
+      serviceAccountName: {{ include "vsl-rpc.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
@@ -58,29 +58,19 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.geth.image.repository }}:{{ .Values.geth.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.geth.image.pullPolicy }}
-          command: ["/bin/sh", "-c"]
+          command: [ "/bin/sh", "-ecx" ]
+          {{- if or .Values.sequencerhttp .Values.geth.args}}
           args:
-            - |
-              GETH_CHAINDATA_DIR="$GETH_DATADIR/geth/chaindata"
-              GENESIS_FILE_PATH="${GENESIS_FILE_PATH:-/config/genesis.json}"
-
-              echo "================================================"
-              echo "Chain ID: $GETH_NETWORKID"
-              echo "================================================"
-
-              if [ ! -d "$GETH_CHAINDATA_DIR" ]; then
-              echo "$GETH_CHAINDATA_DIR missing, running init"
-              echo "Initializing genesis."
-              geth --verbosity=4 init \
-              --datadir="$GETH_DATADIR" \
-              "$GENESIS_FILE_PATH"
-              else
-              echo "$GETH_CHAINDATA_DIR exists."
-              fi
-
-              geth
+            - >-
+              /scripts/geth-entrypoint.sh
+            {{- with .Values.sequencerhttp}}
+              --rollup.sequencerhttp={{ . }}
+            {{- end }}
+            {{- range .Values.geth.args }}
+              {{ . }}
+            {{- end }}
+          {{- end }}
           {{- with .Values.geth.ports }}
-
           ports:
             - containerPort: {{ .auth.port }}
               protocol: TCP
@@ -155,9 +145,50 @@ spec:
             - name: GETH_METRICS_PORT
               value: {{ .Values.geth.ports.metric.port | quote }}
             {{- end }}
+            - name: GETH_VERBOSITY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.geth" .}}
+                  key: verbosity
+                  optional: true
+            - name: GETH_NODISCOVER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.geth" .}}
+                  key: nodiscover
+                  optional: true
+            - name: GETH_MAXPEERS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.geth" .}}
+                  key: maxpeers
+                  optional: true
+            - name: GETH_ROLLUP_DISABLETXPOOLGOSSIP
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.geth" .}}
+                  key: rollup.disabletxpoolgossip
+                  optional: true
+            - name: GETH_RPC_ALLOW_UNPROTECTED_TXS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.geth" .}}
+                  key: rpc.allow-unprotected-txs
+                  optional: true
+            - name: GETH_SYNCMOD
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.geth" .}}
+                  key: syncmode
+                  optional: true
+            - name: GETH_GCMODE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.geth" .}}
+                  key: gcmode
+                  optional: true
           {{- range $key, $value := .Values.geth.env }}
-            - name: {{ $key }}
-              value: {{ $value | quote }}
+            {{- toYaml . | nindent 10 }}
           {{- end }}
           livenessProbe:
             tcpSocket:
@@ -174,6 +205,8 @@ spec:
           volumeMounts:
             - mountPath: /config
               name: config
+            - mountPath: /scripts
+              name: scripts
             - mountPath: {{ .Values.geth.dataDir }}
               name: data
           {{- with .Values.geth.volumeMounts }}
@@ -182,14 +215,13 @@ spec:
         - name: node
           image: {{ .Values.node.image.repository }}:{{ .Values.node.image.tag }}
           imagePullPolicy: {{ .Values.node.image.pullPolicy }}
-          command: ["/bin/sh", "-c"]
+          command: ["/bin/sh", "-ecx"]
           args:
-            - |
-              until [ "$(curl -s -w '%{http_code}' -o /dev/null "${OP_NODE_L2_ENGINE_RPC//ws/http}")" -eq 401 ]; do
-                echo "waiting for geth to be ready"
-                sleep 5
-              done
-              op-node
+            - >-
+              /scripts/node-entrypoint.sh
+              {{- range .Values.node.args }}
+                {{ . }}
+              {{- end }}
           ports:
             - containerPort: {{ .Values.node.ports.rpc.port }}
               protocol: TCP
@@ -225,6 +257,53 @@ spec:
             - name: OP_NODE_METRICS_PORT
               value:  {{ .Values.node.ports.metric.port | quote }}
             {{- end }}
+            - name: OP_NODE_SNAPSHOT_LOG
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.node" .}}
+                  key: snapshotlog.file
+                  optional: true
+            - name: OP_NODE_P2P_PRIV_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.node" .}}
+                  key: p2p.priv.path
+                  optional: true
+            - name: OP_NODE_P2P_PEERSTORE_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.node" .}}
+                  key: p2p.peerstore.path
+                  optional: true
+            - name: OP_NODE_P2P_DISCOVERY_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.node" .}}
+                  key: p2p.discovery.path
+            - name: OP_NODE_P2P_AGENT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.node" .}}
+                  key: p2p.agent
+                  optional: true
+            - name: OP_NODE_P2P_PEER_BANNING
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.node" .}}
+                  key: p2p.ban.peers
+                  optional: true
+            - name: OP_NODE_LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.node" .}}
+                  key: log.level
+                  optional: true
+            - name: OP_NODE_LOG_FORMAT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.node" .}}
+                  key: log.format
+                  optional: true
           {{- range $key, $value := .Values.node.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}
@@ -236,6 +315,8 @@ spec:
           volumeMounts:
             - mountPath: /config
               name: config
+            - mountPath: /scripts
+              name: scripts
             - mountPath: /op_log
               name: log
           {{- with .Values.node.volumeMounts }}
@@ -260,12 +341,16 @@ spec:
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
-                name: {{ template "vsl-chain.proxyd.fullname" .}}
+                name: {{ template "vsl-chain.proxyd.fullname" . }}
         {{- end }}
       volumes:
         - name: config
           emptyDir:
             medium: Memory
+        - name: scripts
+          configMap:
+            name: {{ template "vsl-rpc.scripts.name" . }}
+            defaultMode: 493
         - name: log
           emptyDir: {}
       {{- with .Values.volumes }}

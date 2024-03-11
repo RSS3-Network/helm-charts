@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "vsl-chain-node.name" -}}
+{{- define "vsl-sequencer.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "vsl-chain-node.fullname" -}}
+{{- define "vsl-sequencer.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "vsl-chain-node.chart" -}}
+{{- define "vsl-sequencer.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "vsl-chain-node.labels" -}}
-helm.sh/chart: {{ include "vsl-chain-node.chart" . }}
-{{ include "vsl-chain-node.selectorLabels" . }}
+{{- define "vsl-sequencer.labels" -}}
+helm.sh/chart: {{ include "vsl-sequencer.chart" . }}
+{{ include "vsl-sequencer.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "vsl-chain-node.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "vsl-chain-node.name" . }}
+{{- define "vsl-sequencer.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "vsl-sequencer.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "vsl-chain-node.serviceAccountName" -}}
+{{- define "vsl-sequencer.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "vsl-chain-node.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "vsl-sequencer.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
