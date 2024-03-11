@@ -81,17 +81,6 @@ Create vsl-chain geth name and version as used by the chart label.
 {{- end -}}
 
 {{/*
-Create the name of the Argo CD server service account to use
-*/}}
-{{- define "vsl-chain.geth.serviceAccountName" -}}
-{{- if .Values.geth.serviceAccount.create -}}
-    {{- printf "%s-%s" (include "vsl-chain.fullname" .) .Values.geth.serviceAccount.name | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-    {{- printf "%s-%s" "default" .Values.geth.serviceAccount.name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
 Create vsl-chain node name and version as used by the chart label.
 */}}
 {{- define "vsl-chain.node.fullname" -}}
@@ -113,30 +102,8 @@ Create vsl-chain batcher name and version as used by the chart label.
 {{- end -}}
 
 {{/*
-Create the name of the GCP kms service account to use
-*/}}
-{{- define "vsl-chain.batcher.serviceAccountName" -}}
-{{- if .Values.batcher.serviceAccount.create -}}
-    {{- printf "%s-%s" (include "vsl-chain.fullname" .) .Values.batcher.serviceAccount.name | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-    {{- printf "%s-%s" "default" .Values.batcher.serviceAccount.name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
 Create vsl-chain proposer name and version as used by the chart label.
 */}}
 {{- define "vsl-chain.proposer.fullname" -}}
 {{- printf "%s-%s" (include "vsl-chain.fullname" .) .Values.proposer.name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
-{{/*
-Create the name of the GCP kms service account to use
-*/}}
-{{- define "vsl-chain.proposer.serviceAccountName" -}}
-{{- if .Values.proposer.serviceAccount.create -}}
-    {{- printf "%s-%s" (include "vsl-chain.fullname" .) .Values.proposer.serviceAccount.name | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-    {{- printf "%s-%s" "default" .Values.proposer.serviceAccount.name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
 {{- end -}}
