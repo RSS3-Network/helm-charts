@@ -8,6 +8,8 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+clusterDomain: cluster.local
+
 updateStrategy:
   type: RollingUpdate
 podManagementPolicy: Parallel

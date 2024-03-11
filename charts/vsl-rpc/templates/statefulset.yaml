@@ -231,6 +231,12 @@ spec:
               protocol: UDP
               name: p2p-udp
           env:
+            - name: STATEFULSET_NAME
+              value: {{ template "vsl-rpc.fullname" . }}
+            - name: STATEFULSET_FQDN
+              value: {{ template "vsl-rpc.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
+            - name: OP_NODE_P2P_ADVERTISE_IP
+              value: $(hostname).${STATEFULSET_FQDN}
             - name: OP_NODE_ROLLUP_CONFIG
               value: {{ .Values.node.rollup.path }}
             - name: OP_NODE_L2_ENGINE_AUTH
