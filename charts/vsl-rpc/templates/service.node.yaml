@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "vsl-rpc.fullname" . }}-node
+  labels:
+    {{- include "vsl-rpc.labels" . | nindent 4 }}
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+spec:
+  clusterIP: None
+  publishNotReadyAddresses: true
+  {{- with .Values.node.ports}}
+  ports:
+    - protocol: TCP
+      port: {{ .p2p.port }}
+      targetPort: {{ .p2p.port }}
+      name: p2p
+    - protocol: TCP
+      port: {{ .rpc.port }}
+      targetPort: {{ .rpc.port }}
+      name: rpc
+    {{- if .metric.enable }}
+    - protocol: TCP
+      port: {{ .metric.port }}
+      targetPort: {{ .metric.port }}
+      name: metric
+    {{- end }}
+  {{- end }}
+  selector:
+    {{- include "vsl-rpc.selectorLabels" . | nindent 4 }}
