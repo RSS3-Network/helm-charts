@@ -105,6 +105,7 @@ node:
   name: node
   rollupJsonPath: 
   sequencerStopped: true
+  nodeP2pStatic:
   image:
     repository: rss3/op-node
     pullPolicy: IfNotPresent
