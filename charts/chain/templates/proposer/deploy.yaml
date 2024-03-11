@@ -26,7 +26,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- if .Values.proposer.serviceAccount.create }}
-      serviceAccountName: {{ include "vsl-chain.proposer.serviceAccountName" . }}
+      serviceAccountName: {{ .Values.proposer.serviceAccount.name }}
       {{- end }}
       containers:
         - name: proposer

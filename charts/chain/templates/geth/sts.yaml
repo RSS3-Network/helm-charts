@@ -33,7 +33,7 @@ spec:
         enabled: "true"
     spec:
       {{- if .Values.geth.serviceAccount.create }}
-      serviceAccountName: {{ include "vsl-chain.geth.serviceAccountName" . }}
+      serviceAccountName: {{ .Values.geth.serviceAccount.name }}
       {{- end }}
       volumes:
         - name: config

@@ -129,7 +129,7 @@ proposer:
     # -- Create server service account
     create: true
     # -- Server service account name
-    name: proposer
+    name: mainnet-chain-proposer
     # -- Annotations applied to created service account
     annotations: { }
     # -- Labels applied to created service account
@@ -153,7 +153,7 @@ batcher:
     # -- Create server service account
     create: true
     # -- Server service account name
-    name: batcher
+    name: mainnet-chain-batcher
     # -- Annotations applied to created service account
     annotations: { }
     # -- Labels applied to created service account
