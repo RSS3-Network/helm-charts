@@ -209,18 +209,7 @@ volumes: []
 #     secretName: mysecret
 #     optional: false
 
-initContainers:
-  - name: generate-key
-    image: openquantumsafe/openssl3
-    command: [ "/bin/sh", "-c" ]
-    args:
-      - |
-        openssl rand -hex 32 > /config/opnode_p2p_priv.txt;
-        openssl rand -hex 32 > {{ .Values.jwt.path }};
-    volumeMounts:
-      - mountPath: /config
-        name: config
-
+initContainers: []
 
 nodeSelector: {}
 

@@ -57,7 +57,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: {{ .Values.node.p2p.generateSecretKey }}
-                  name: {{ .Values.node.p2p.generateSecretKey }}
+                  name: {{ .Values.node.p2p.generateSecretName }}
           command: ["/bin/sh", "-c"]
           args:
             - |
