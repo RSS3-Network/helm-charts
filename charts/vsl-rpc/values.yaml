@@ -26,7 +26,6 @@ geth:
     url: ""
   # Additional volumeMounts on the output Deployment definition.
   dataDir: /data
-
   volumeMounts: [ ]
   # - name: foo
   #   mountPath: "/etc/foo"
@@ -80,6 +79,16 @@ node:
   rollup:
     path: /config/rollup.json
     url: ""
+  p2p:
+    generateSecretName:
+    generateSecretKey:
+
+    privateKeyPath: "/config/opnode_p2p_priv.txt"
+    peerStorePath: "/op_log/opnode_peerstore_db"
+    discoveryPath: "/op_log/opnode_discovery_db"
+
+    agent: "rss3-vsl"
+    banPeers: false
   # Additional volumeMounts on the output Deployment definition.
   volumeMounts: [ ]
   # - name: foo
@@ -148,11 +157,6 @@ configs:
     annotations: {}
 
     snapshotlog.file: "/op_log/snapshot.log"
-    p2p.priv.path: "/config/opnode_p2p_priv.txt"
-    p2p.peerstore.path: "/op_log/opnode_peerstore_db"
-    p2p.discovery.path: "/op_log/opnode_discovery_db"
-    p2p.agent: "rss3-vsl"
-    p2p.ban.peers: true
 
 storage:
   hostPath: ""
@@ -205,6 +209,17 @@ volumes: []
 #     secretName: mysecret
 #     optional: false
 
+initContainers:
+  - name: generate-key
+    image: openquantumsafe/openssl3
+    command: [ "/bin/sh", "-c" ]
+    args:
+      - |
+        openssl rand -hex 32 > /config/opnode_p2p_priv.txt;
+        openssl rand -hex 32 > {{ .Values.jwt.path }};
+    volumeMounts:
+      - mountPath: /config
+        name: config
 
 
 nodeSelector: {}

@@ -44,14 +44,31 @@ spec:
               name: config
         - name: generate-key
           image: openquantumsafe/openssl3
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: P2P_GENERATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: {{ .Values.node.p2p.generateSecretKey }}
+                  name: {{ .Values.node.p2p.generateSecretKey }}
           command: ["/bin/sh", "-c"]
           args:
             - |
-              openssl rand -hex 32 > /config/opnode_p2p_priv.txt;
+              echo ${P2P_GENERATE_KEY}-${POD_NAMESPACE}-${POD_NAME} | openssl sha256 -binary | xxd -p -c 32 > {{ .Values.node.p2p.privateKeyPath }};
               openssl rand -hex 32 > {{ .Values.jwt.path }};
           volumeMounts:
             - mountPath: /config
               name: config
+      {{- with .Values.initContainers }}
+        {{- toYaml . | nindent 12 }}
+      {{- end }}
       containers:
         - name: geth
           securityContext:
@@ -276,35 +293,18 @@ spec:
                   name: {{ include "vsl-rpc.config-name.node" .}}
                   key: snapshotlog.file
                   optional: true
+            {{- with .Values.node.p2p }}
             - name: OP_NODE_P2P_PRIV_PATH
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ include "vsl-rpc.config-name.node" .}}
-                  key: p2p.priv.path
-                  optional: true
+              value: {{ .privateKeyPath }}
             - name: OP_NODE_P2P_PEERSTORE_PATH
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ include "vsl-rpc.config-name.node" .}}
-                  key: p2p.peerstore.path
-                  optional: true
+              value: {{ .peerStorePath }}
             - name: OP_NODE_P2P_DISCOVERY_PATH
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ include "vsl-rpc.config-name.node" .}}
-                  key: p2p.discovery.path
+              value: {{ .discoveryPath }}
             - name: OP_NODE_P2P_AGENT
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ include "vsl-rpc.config-name.node" .}}
-                  key: p2p.agent
-                  optional: true
+              value: {{ .agent }}
             - name: OP_NODE_P2P_PEER_BANNING
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ include "vsl-rpc.config-name.node" .}}
-                  key: p2p.ban.peers
-                  optional: true
+              value: {{ .banPeers | quote }}
+            {{- end }}
             - name: OP_NODE_LOG_LEVEL
               valueFrom:
                 configMapKeyRef:
