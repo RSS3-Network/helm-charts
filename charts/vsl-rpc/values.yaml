@@ -76,6 +76,7 @@ geth:
   #   memory: 128Mi
 
 node:
+  autoDiscovery: true
   rollup:
     path: /config/rollup.json
     url: ""

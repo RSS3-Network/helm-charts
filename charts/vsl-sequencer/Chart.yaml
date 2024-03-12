@@ -15,7 +15,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.0
+version: 0.1.1
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -25,14 +25,16 @@ appVersion: "1.16.0"
 
 dependencies:
   - name: vsl-rpc
-    version: "0.1.0"
+    version: 0.1.9
     repository: "file://../vsl-rpc"
     alias: sequencer
   - name: op-batcher
+    alias: batcher
+    condition: batcher.enabled
     version: "0.1.0"
     repository: "file://../op-batcher"
-    alias: batcher
   - name: op-proposer
+    alias: proposer
+    condition: proposer.enabled
     version: 0.1.0
     repository: "file://../op-proposer"
-    alias: proposer
