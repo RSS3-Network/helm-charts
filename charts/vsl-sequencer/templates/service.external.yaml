@@ -19,7 +19,7 @@ metadata:
   {{- end }}
   {{- with $root.Values.externalService.annotations }}
   annotations:
-    {{- toYaml $root | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
 
 spec:

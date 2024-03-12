@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-sequencer:
+vsl-sequencer:
   # disable sequencer http url
   sequencerhttp: ""
   node:
@@ -19,7 +19,6 @@ externalService:
   publishNotReadyAddresses: true
 
   labels: {}
-  annotations: {}
 
 serviceAccount:
   # Specifies whether a service account should be created
