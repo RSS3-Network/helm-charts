@@ -53,15 +53,17 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-            - name: P2P_GENERATE_KEY
+            - name: P2P_ROOT_KEY
               valueFrom:
                 secretKeyRef:
                   key: {{ .Values.node.p2p.generateSecretKey }}
                   name: {{ .Values.node.p2p.generateSecretName }}
+            - name: P2P_GENERATE_KEY
+              value: $(P2P_ROOT_KEY)-$(POD_NAMESPACE)-$(POD_NAME)
           command: ["/bin/sh", "-c"]
           args:
             - |
-              echo ${P2P_GENERATE_KEY}-${POD_NAMESPACE}-${POD_NAME} | openssl sha256 -binary | xxd -p -c 32 > {{ .Values.node.p2p.privateKeyPath }};
+              echo ${P2P_GENERATE_KEY} | openssl sha256 -binary | xxd -p -c 32 > {{ .Values.node.p2p.privateKeyPath }};
               openssl rand -hex 32 > {{ .Values.jwt.path }};
           volumeMounts:
             - mountPath: /config
