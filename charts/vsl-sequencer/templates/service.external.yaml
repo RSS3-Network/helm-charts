@@ -1,6 +1,6 @@
 {{- if .Values.externalService.enabled }}
 {{- $fullName := include "vsl-sequencer.fullname" . }}
-{{- $replicaCount := .Values.sequencer.replicaCount | int }}
+{{- $replicaCount := index .Values "vsl-sequencer" "replicaCount" | int }}
 {{- $root := . }}
 
 {{- range $i, $e := until $replicaCount }}
@@ -26,10 +26,12 @@ spec:
   type: {{ $root.Values.externalService.type }}
   publishNotReadyAddresses: {{ $root.Values.externalService.publishNotReadyAddresses }}
   ports:
+    {{- with index $root.Values "vsl-sequencer" }}
     - protocol: TCP
-      port: {{ $root.Values.sequencer.node.ports.p2p.port }}
-      targetPort: {{ $root.Values.sequencer.node.ports.p2p.port }}
+      port: {{ .node.ports.p2p.port }}
+      targetPort: {{ .node.ports.p2p.port }}
       name: p2p
+    {{- end }}
   selector:
     {{- include "vsl-sequencer.selectorLabels" $root | nindent 4 }}
     statefulset.kubernetes.io/pod-name: {{ $targetPod }}
