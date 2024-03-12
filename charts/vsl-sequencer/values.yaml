@@ -12,9 +12,14 @@ sequencer:
       - --sequencer.stopped=true
       - --rpc.enable-admin=true
 
-service:
-  type: ClusterIP
-  port: 80
+externalService:
+  enabled: false
+
+  type: LoadBalancer
+  publishNotReadyAddresses: true
+
+  labels: {}
+  annotations: {}
 
 serviceAccount:
   # Specifies whether a service account should be created
