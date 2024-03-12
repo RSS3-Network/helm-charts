@@ -368,6 +368,16 @@ entries:
   vsl-rpc:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-03-12T08:16:10.98941229Z"
+    description: A Helm chart for Kubernetes
+    digest: 45daa3b90ba0234660139ebb54f95b537ab790c9eb961d50cc4f0f21b5c89d8c
+    name: vsl-rpc
+    type: application
+    urls:
+    - https://github.com/RSS3-Network/helm-charts/releases/download/vsl-rpc-0.1.9/vsl-rpc-0.1.9.tgz
+    version: 0.1.9
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-03-12T08:07:38.426318618Z"
     description: A Helm chart for Kubernetes
     digest: 5e8c6f42d3f768f620b2a06789f54a36297312bbf7c6cec8b38f3c31c3757f0c
@@ -480,4 +490,4 @@ entries:
     urls:
     - https://github.com/RSS3-Network/helm-charts/releases/download/vsl-sequencer-0.1.0/vsl-sequencer-0.1.0.tgz
     version: 0.1.0
-generated: "2024-03-12T08:07:38.426402194Z"
+generated: "2024-03-12T08:16:10.989507389Z"
