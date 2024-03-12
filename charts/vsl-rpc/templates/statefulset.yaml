@@ -173,7 +173,7 @@ spec:
                   name: {{ include "vsl-rpc.config-name.geth" .}}
                   key: rpc.allow-unprotected-txs
                   optional: true
-            - name: GETH_SYNCMOD
+            - name: GETH_SYNCMODE
               valueFrom:
                 configMapKeyRef:
                   name: {{ include "vsl-rpc.config-name.geth" .}}
@@ -230,6 +230,11 @@ spec:
             - containerPort: {{ .Values.node.ports.p2p.port }}
               protocol: UDP
               name: p2p-udp
+            {{- if .Values.node.ports.metric.enable }}
+            - containerPort: {{ .Values.node.ports.metric.port }}
+              protocol: TCP
+              name: node-metrics
+            {{- end }}
           env:
             - name: POD_NAME
               valueFrom:
