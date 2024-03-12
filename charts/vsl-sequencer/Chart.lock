@@ -8,5 +8,5 @@ dependencies:
 - name: op-proposer
   repository: file://../op-proposer
   version: 0.1.0
-digest: sha256:4d0d2cc6dacfc214b6eba75b48a6e1fe5e33635e01aabd0616611d008c97333e
-generated: "2024-03-12T18:36:32.97021+08:00"
+digest: sha256:1b1340cb810ca7c3ad89d81b7e611e45c9cc9d232db88c9d16277264e3714e73
+generated: "2024-03-12T19:27:37.95835+08:00"
