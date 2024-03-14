@@ -305,7 +305,7 @@ spec:
             - name: OP_NODE_P2P_DISCOVERY_PATH
               value: {{ .discoveryPath }}
             - name: OP_NODE_P2P_AGENT
-              value: {{ .agent }}
+              value: {{ .agent | default "$(POD_NAME)" | quote }}
             - name: OP_NODE_P2P_PEER_BANNING
               value: {{ .banPeers | quote }}
             {{- end }}

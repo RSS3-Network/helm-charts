@@ -88,7 +88,7 @@ node:
     peerStorePath: "/op_log/opnode_peerstore_db"
     discoveryPath: "/op_log/opnode_discovery_db"
 
-    agent: "rss3-vsl"
+    agent: ""
     banPeers: false
   # Additional volumeMounts on the output Deployment definition.
   volumeMounts: [ ]
