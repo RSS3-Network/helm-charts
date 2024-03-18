@@ -254,6 +254,8 @@ spec:
               protocol: TCP
               name: node-metrics
             {{- end }}
+          resources:
+            {{- toYaml .Values.node.resources | nindent 12 }}
           env:
             - name: POD_NAME
               valueFrom:
