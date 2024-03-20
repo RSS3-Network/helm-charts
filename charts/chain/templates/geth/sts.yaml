@@ -158,6 +158,11 @@ spec:
               else
                 /bin/proxyd /etc/proxyd/opstack-read.toml
               fi
+          readinessProbe:
+            exec:
+              command: ["/bin/bash", "-c", "geth-readiness.sh"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
           volumeMounts:
             - mountPath: /etc/proxyd
               name: proxyd-config
