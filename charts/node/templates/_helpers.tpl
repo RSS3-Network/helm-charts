@@ -119,7 +119,7 @@ app.kubernetes.io/managed-by: {{ .context.Release.Service }}
 Selector labels
 */}}
 {{- define "node.indexer.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "node.name" .context }}-{{ include "node.indexer.name" .indexer }}
+app.kubernetes.io/name: {{ include "node.name" .context }}
 app.kubernetes.io/instance: {{ .context.Release.Name }}
 {{- if .component }}
 app.kubernetes.io/component: {{ .component }}
