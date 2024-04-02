@@ -88,6 +88,10 @@ spec:
               {{ . }}
             {{- end }}
           {{- with .Values.geth.ports }}
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "pkill -SIGINT geth"]
           ports:
             - containerPort: {{ .auth.port }}
               protocol: TCP

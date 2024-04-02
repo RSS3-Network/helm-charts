@@ -25,12 +25,19 @@ check_syncing_status() {
 }
 
 check_syncing_status;
-block=$(get_current_block);
-echo "block: $block";
-
+block_first_query=$(get_current_block);
+echo "block_first_query: $block_first_query";
 if [ "$block" -eq 0 ]; then
   echo "Block height is 0.";
   exit 1;
+fi;
+
+sleep 5
+block_second_query=$(get_current_block);
+echo "block_second_query: $block_first_query";
+if [ "$block_first_query" -eq "$block_second_query" ]; then
+  echo "Block is not in syncing.";
+  exit 2;
 fi;
 
 echo "RPC endpoint at $URL is healthy.";

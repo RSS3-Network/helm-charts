@@ -89,6 +89,10 @@ spec:
                 /scripts/geth-entrypoint.sh \
                  --rollup.sequencerhttp={{ .Values.geth.rollupSequencerHttp }};
               fi
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "pkill -SIGINT geth"]
           ports:
             - containerPort: 8645
               protocol: TCP
