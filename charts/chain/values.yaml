@@ -49,6 +49,9 @@ geth:
     # Overrides the image tag whose default is the chart appVersion.
     tag: rss3-main-1ecad30
 
+  probe:
+    tolerableDelaySeconds: 10
+
   serviceAccount:
     # -- Create server service account
     create: true
@@ -169,7 +172,7 @@ batcher:
 ## proxyd
 proxyd:
   name: proxyd
-  enabled: false
+  enabled: true
   image:
     repository: rss3/proxyd
     pullPolicy: IfNotPresent

@@ -164,12 +164,15 @@ spec:
               fi
           readinessProbe:
             exec:
-              command: ["/bin/bash", "-c", "geth-readiness.sh"]
-            initialDelaySeconds: 5
-            periodSeconds: 5
+              command: ["/bin/sh", "-c", "/scripts/geth-readiness.sh", "{{ sub .Values.geth.probe.tolerableDelaySeconds 2 }}"]
+            initialDelaySeconds: {{ .Values.geth.probe.tolerableDelaySeconds }}
+            periodSeconds: {{ .Values.geth.probe.tolerableDelaySeconds }}
+            timeoutSeconds: {{ .Values.geth.probe.tolerableDelaySeconds }}
           volumeMounts:
             - mountPath: /etc/proxyd
               name: proxyd-config
+            - mountPath: /scripts
+              name: scripts
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

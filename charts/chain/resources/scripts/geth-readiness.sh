@@ -3,12 +3,11 @@
 set -eux
 
 URL=http://localhost:8545;
+SLEEP_DURATION=${1:-10}  # Default sleep duration is 10 seconds, can be overridden by passing an argument
 
 get_current_block() {
     data='{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}';
-    response=$(curl -s -X POST -H "Content-Type: application/json" --data "$data" $URL);
-    echo "response: $response";
-    hex=$(echo "$response" | jq -r '.result');
+    hex=$(curl -s -X POST -H "Content-Type: application/json" --data "$data" $URL | jq -r '.result');
     trimmed_hex=${hex#0x};
     echo $((16#$trimmed_hex));
 }
@@ -32,7 +31,7 @@ if [ "$block_first_query" -eq 0 ]; then
   exit 1;
 fi;
 
-sleep 5
+sleep $SLEEP_DURATION
 block_second_query=$(get_current_block);
 echo "block_second_query: $block_first_query";
 if [ "$block_first_query" -eq "$block_second_query" ]; then
