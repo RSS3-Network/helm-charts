@@ -1,0 +1,15 @@
+{{- if .Values.geth.recovery.enabled }}
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotContent
+metadata:
+  name: {{ .Values.geth.recovery.snapshotName }}
+spec:
+  deletionPolicy: Retain
+  driver: pd.csi.storage.gke.io
+  source:
+    snapshotHandle: projects/naturalselectionlabs/global/snapshots/{{ .Values.geth.recovery.snapshotName }}
+  volumeSnapshotRef:
+    kind: VolumeSnapshot
+    name: {{ .Values.geth.recovery.snapshotName }}
+    namespace: network
+{{- end }}

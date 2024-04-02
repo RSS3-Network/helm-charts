@@ -27,7 +27,7 @@ check_syncing_status() {
 check_syncing_status;
 block_first_query=$(get_current_block);
 echo "block_first_query: $block_first_query";
-if [ "$block" -eq 0 ]; then
+if [ "$block_first_query" -eq 0 ]; then
   echo "Block height is 0.";
   exit 1;
 fi;
