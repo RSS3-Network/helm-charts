@@ -87,11 +87,11 @@ spec:
             {{- range .Values.geth.args }}
               {{ . }}
             {{- end }}
-          {{- with .Values.geth.ports }}
           lifecycle:
             preStop:
               exec:
                 command: ["/bin/sh", "-c", "pkill -SIGINT geth"]
+          {{- with .Values.geth.ports }}
           ports:
             - containerPort: {{ .auth.port }}
               protocol: TCP
@@ -243,6 +243,10 @@ spec:
               {{- range .Values.node.args }}
                 {{ . }}
               {{- end }}
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "pkill -SIGINT node"]
           ports:
             - containerPort: {{ .Values.node.ports.rpc.port }}
               protocol: TCP
