@@ -3,6 +3,16 @@ entries:
   chain:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-04-02T13:25:18.034613298Z"
+    description: A Helm chart for Kubernetes
+    digest: 4ad531d7dd2d8d5e4c2fc7d5991f9714d6b19cc7a7c0343abbfda7d2c496eb2e
+    name: chain
+    type: application
+    urls:
+    - https://github.com/RSS3-Network/helm-charts/releases/download/chain-0.1.25/chain-0.1.25.tgz
+    version: 0.1.25
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-04-02T08:42:06.695987037Z"
     description: A Helm chart for Kubernetes
     digest: ff5720df514a6a9c48eebb470db73e84aeeb6772be8747656b8d74c5f01dc99c
@@ -700,4 +710,4 @@ entries:
     urls:
     - https://github.com/RSS3-Network/helm-charts/releases/download/vsl-sequencer-0.1.0/vsl-sequencer-0.1.0.tgz
     version: 0.1.0
-generated: "2024-04-02T08:42:06.914290736Z"
+generated: "2024-04-02T13:25:18.173061271Z"
