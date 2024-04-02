@@ -50,7 +50,7 @@ geth:
     tag: rss3-main-1ecad30
 
   probe:
-    tolerableDelaySeconds: 10
+    tolerableDelaySeconds: 15
 
   serviceAccount:
     # -- Create server service account

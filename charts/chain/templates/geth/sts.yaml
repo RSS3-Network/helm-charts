@@ -168,7 +168,7 @@ spec:
               fi
           readinessProbe:
             exec:
-              command: ["/bin/sh", "-c", "/scripts/geth-readiness.sh", "{{ sub .Values.geth.probe.tolerableDelaySeconds 2 }}"]
+              command: ["/bin/sh", "-c", "/scripts/geth-readiness.sh", "{{ div .Values.geth.probe.tolerableDelaySeconds 2 }}"]
             initialDelaySeconds: {{ .Values.geth.probe.tolerableDelaySeconds }}
             periodSeconds: {{ .Values.geth.probe.tolerableDelaySeconds }}
             timeoutSeconds: {{ .Values.geth.probe.tolerableDelaySeconds }}
