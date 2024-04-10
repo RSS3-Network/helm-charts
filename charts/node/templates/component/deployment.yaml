@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "node.indexer.fullname" (merge (dict "context" $) $indexer)}}
+  name: {{ $indexer.nameOverride | default (include "node.indexer.fullname" (merge (dict "context" $) $indexer)) }}
   labels:
     {{- include "node.indexer.labels" (dict "context" $ "indexer" $indexer "component" "indexer") | nindent 4 }}
 spec:
