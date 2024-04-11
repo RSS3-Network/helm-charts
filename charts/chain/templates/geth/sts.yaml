@@ -94,11 +94,11 @@ spec:
               exec:
                 command: ["/bin/sh", "-c", "pkill -SIGINT geth"]
           ports:
-            - containerPort: 8645
+            - containerPort: 8545
               protocol: TCP
-            - containerPort: 7400
+            - containerPort: 7300
               protocol: TCP
-              name: metrics
+              name: geth-metrics
           resources:
             {{- toYaml .Values.geth.resources | nindent 12 }}
           envFrom:
@@ -134,14 +134,14 @@ spec:
               exec:
                 command: ["/bin/sh", "-c", "pkill -SIGINT node"]
           ports:
-            - containerPort: 6161
+            - containerPort: 6061
               protocol: TCP
-            - containerPort: 7401
+            - containerPort: 7301
               protocol: TCP
-              name: metrics
-            - containerPort: 9103
+              name: node-metrics
+            - containerPort: 9003
               protocol: TCP
-            - containerPort: 9645
+            - containerPort: 9545
               protocol: TCP
           envFrom:
             - secretRef:
