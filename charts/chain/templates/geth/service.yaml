@@ -50,4 +50,8 @@ spec:
       port: 9045
       targetPort: 9045
       name: public
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 3600
   type: ClusterIP
