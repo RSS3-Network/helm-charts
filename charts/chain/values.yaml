@@ -13,6 +13,9 @@
 
 ## Globally shared configuration
 global:
+  vault:
+    path: kv/data/network/chain
+    version: 11
   # -- Annotations for the all deployed Deployments
   deploymentAnnotations: {}
   # -- Annotations for the all deployed pods
