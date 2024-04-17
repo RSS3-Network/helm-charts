@@ -6,7 +6,7 @@ image:
   repository: rss3/op-proposer
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: a77d1f52fc3492bf21915bdff8ee8e0b5bd2cb8a
+  tag: e3317dbcd2b22c6a517059598d092ead87e544db
 
 imagePullSecrets: []
 nameOverride: ""
