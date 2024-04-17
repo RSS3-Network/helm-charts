@@ -49,10 +49,6 @@ spec:
           envFrom:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          lifecycle:
-            postStart:
-              httpGet:
-                port: 3000
           {{- end }}
         {{- end }}
         - name: {{ .Chart.Name }}
@@ -125,6 +121,13 @@ spec:
                   key: {{ .Values.config.wallet.privateKey.key }}
                   name: {{ .Values.config.wallet.privateKey.secretName }}
             {{- end }}
+          {{- with .Values.env }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:

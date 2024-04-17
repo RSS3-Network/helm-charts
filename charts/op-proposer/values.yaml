@@ -12,6 +12,9 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+env: []
+envFrom: []
+
 config:
   logLevel: debug
   l1:
