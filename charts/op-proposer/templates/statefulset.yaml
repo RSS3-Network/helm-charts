@@ -30,6 +30,31 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
+        {{- if eq .Values.config.wallet.type "signer" }}
+        - name: signer
+          {{- with .Values.config.wallet.signer }}
+          image: {{ .image.repository }}:{{ .image.tag }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          env:
+            - name: PORT
+              value: "3000"
+            {{- range $key, $value := .env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          {{- with .envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          lifecycle:
+            postStart:
+              httpGet:
+                port: 3000
+          {{- end }}
+      {{- end }}
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
@@ -104,37 +129,12 @@ spec:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
-          lifecycle:
-            postStart:
-              httpGet:
-                port: rpc
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-        {{- if eq .Values.config.wallet.type "signer" }}
-        - name: signer
-          {{- with .Values.config.wallet.signer }}
-          image: {{ .image.repository }}:{{ .image.tag }}
-          imagePullPolicy: IfNotPresent
-          ports:
-            - containerPort: 3000
-              protocol: TCP
-          env:
-            - name: PORT
-              value: "3000"
-            {{- range $key, $value := .env }}
-            - name: {{ $key }}
-              value: {{ $value | quote }}
-            {{- end }}
-          {{- with .envFrom }}
-          envFrom:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- end }}
-      {{- end }}
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
