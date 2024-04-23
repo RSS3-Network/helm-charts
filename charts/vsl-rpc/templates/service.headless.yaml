@@ -4,8 +4,6 @@ metadata:
   name: {{ template "vsl-rpc.fullname" . }}
   labels:
     {{- include "vsl-rpc.labels" . | nindent 4 }}
-  annotations:
-    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
 spec:
   clusterIP: None
   publishNotReadyAddresses: true
@@ -15,6 +13,12 @@ spec:
       port: {{ .port }}
       targetPort: {{ .port }}
       name: p2p
+  {{- end }}
+  {{- with .Values.node.ports.rpc }}
+    - protocol: TCP
+      port: {{ .port }}
+      targetPort: {{ .port }}
+      name: rpc
   {{- end }}
   selector:
     {{- include "vsl-rpc.selectorLabels" . | nindent 4 }}
