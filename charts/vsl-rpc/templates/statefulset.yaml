@@ -212,15 +212,9 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           livenessProbe:
-            tcpSocket:
-              port: http
-            initialDelaySeconds: 60
-            periodSeconds: 120
+            {{- toYaml .Values.geth.livenessProbe | nindent 12 }}
           readinessProbe:
-            tcpSocket:
-              port: http
-            initialDelaySeconds: 10
-            periodSeconds: 10
+            {{- toYaml .Values.geth.readinessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.geth.resources | nindent 12 }}
           volumeMounts:
@@ -264,6 +258,10 @@ spec:
             {{- end }}
           resources:
             {{- toYaml .Values.node.resources | nindent 12 }}
+          livenessProbe:
+            {{- toYaml .Values.node.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.node.readinessProbe | nindent 12 }}
           env:
             - name: POD_NAME
               valueFrom:

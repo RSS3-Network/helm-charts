@@ -74,6 +74,16 @@ geth:
     # requests:
   #   cpu: 100m
   #   memory: 128Mi
+  livenessProbe:
+    httpGet:
+      port: http
+    initialDelaySeconds: 60
+    periodSeconds: 120
+  readinessProbe:
+    httpGet:
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 10
 
 node:
   autoDiscovery: true
@@ -125,6 +135,20 @@ node:
     # requests:
   #   cpu: 100m
   #   memory: 128Mi
+  livenessProbe:
+    httpGet:
+      port: rpc
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+  readinessProbe:
+    httpGet:
+      port: rpc
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
 ## proxyd
 proxyd:
   name: proxyd
