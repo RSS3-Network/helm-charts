@@ -81,9 +81,6 @@ spec:
           args:
             - >-
               /scripts/geth-entrypoint.sh
-            {{- with .Values.sequencerhttp}}
-              --rollup.sequencerhttp={{ . }}
-            {{- end }}
             {{- range .Values.geth.args }}
               {{ . }}
             {{- end }}
@@ -207,6 +204,12 @@ spec:
                 configMapKeyRef:
                   name: {{ include "vsl-rpc.config-name.geth" .}}
                   key: gcmode
+                  optional: true
+            - name: GETH_ROLLUP_SEQUENCERHTTP
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "vsl-rpc.config-name.geth" .}}
+                  key: rollup.sequencerhttp
                   optional: true
           {{- with .Values.geth.env }}
             {{- toYaml . | nindent 12 }}

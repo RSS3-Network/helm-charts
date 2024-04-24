@@ -176,6 +176,7 @@ configs:
     gcmode: "archive"
     rpc.allow-unprotected-txs: true
     syncmode: "full"
+    rollup.sequencerhttp: "http://sequencer"
 
   node:
     create: true
