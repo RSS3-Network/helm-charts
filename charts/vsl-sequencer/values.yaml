@@ -12,6 +12,18 @@ vsl-sequencer:
       - --sequencer.stopped=true
       - --rpc.enable-admin=true
 
+    readinessProbe:
+      exec:
+        command:
+          - /bin/sh
+          - -c
+          - >
+            if [[ "$(curl -s -X POST -H 'Content-Type: application/json' --data '{"jsonrpc":"2.0","method":"admin_sequencerActive","params":[],"id":1}' http://localhost:9545 | jq -r '.result')" == "true" ]]; then
+              exit 0;
+            else
+            exit 1;
+            fi
+
 externalService:
   enabled: false
 
