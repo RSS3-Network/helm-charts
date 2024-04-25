@@ -1,0 +1,18 @@
+{{- if and .Values.config.metrics.enabled .Values.serviceMonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "proxyd.fullname" . }}
+  labels:
+    {{- include "proxyd.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: metrics
+      {{- include "proxyd.selectorLabels" . | nindent 6 }}
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 15s
+      scrapeTimeout: 10s
+{{- end }}

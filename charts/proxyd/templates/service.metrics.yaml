@@ -1,0 +1,18 @@
+{{- if and .Values.config.metrics.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "proxyd.fullname" . }}-metrics
+  labels:
+    app.kubernetes.io/component: metrics
+    {{- include "proxyd.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: metrics
+      port: {{ .Values.config.metrics.port }}
+      targetPort: metrics
+      protocol: TCP
+  selector:
+    {{- include "proxyd.selectorLabels" . | nindent 4 }}
+{{- end -}}
