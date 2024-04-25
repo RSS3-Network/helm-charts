@@ -464,6 +464,17 @@ entries:
     urls:
     - https://github.com/RSS3-Network/helm-charts/releases/download/op-proposer-0.1.0/op-proposer-0.1.0.tgz
     version: 0.1.0
+  proxyd:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2024-04-25T10:00:36.148089165Z"
+    description: A Helm chart for Kubernetes
+    digest: 444bd6ac5ef75dc118ffa700931c6086b9ba505f91e9289bb6b4051a2a6bd673
+    name: proxyd
+    type: application
+    urls:
+    - https://github.com/RSS3-Network/helm-charts/releases/download/proxyd-0.1.0/proxyd-0.1.0.tgz
+    version: 0.1.0
   vsl-chain:
   - apiVersion: v2
     appVersion: 1.16.0
@@ -1000,4 +1011,4 @@ entries:
     urls:
     - https://github.com/RSS3-Network/helm-charts/releases/download/vsl-sequencer-0.1.0/vsl-sequencer-0.1.0.tgz
     version: 0.1.0
-generated: "2024-04-24T07:40:54.644818162Z"
+generated: "2024-04-25T10:00:36.148253472Z"
