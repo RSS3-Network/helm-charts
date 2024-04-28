@@ -80,8 +80,11 @@ geth:
     initialDelaySeconds: 60
     periodSeconds: 120
   readinessProbe:
-    httpGet:
-      port: http
+    exec:
+      command:
+        - /bin/sh
+        - -c
+        - /usr/local/bin/geth --exec "eth.syncing" attach http://localhost:8545
     initialDelaySeconds: 10
     periodSeconds: 10
 
