@@ -4,6 +4,7 @@ metadata:
   name: {{ template "vsl-rpc.fullname" . }}-node
   labels:
     {{- include "vsl-rpc.labels" . | nindent 4 }}
+    app.kubernetes.io/component: node
 spec:
   type: ClusterIP
   {{- with .Values.node.ports}}

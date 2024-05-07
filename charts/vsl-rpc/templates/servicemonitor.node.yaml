@@ -1,0 +1,26 @@
+{{- if and .Values.servicemonitor.enabled .Values.node.ports.metric.enable }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "vsl-rpc.fullname" . }}-node
+  labels:
+    {{- include "vsl-rpc.labels" . | nindent 4 }}
+  {{- with .Values.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "vsl-rpc.labels" . | nindent 6 }}
+      app.kubernetes.io/component: node
+  endpoints:
+    - port: metric
+      path: /
+      interval: 15s
+      scrapeTimeout: 10s
+      scheme: http
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+{{- end -}}

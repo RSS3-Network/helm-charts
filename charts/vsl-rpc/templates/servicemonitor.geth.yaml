@@ -1,0 +1,26 @@
+{{- if and .Values.servicemonitor.enabled .Values.geth.ports.metric.enable }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "vsl-rpc.fullname" . }}-geth
+  labels:
+    {{- include "vsl-rpc.labels" . | nindent 4 }}
+  {{- with .Values.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "vsl-rpc.labels" . | nindent 6 }}
+      app.kubernetes.io/component: geth
+  endpoints:
+    - port: metric
+      path: /debug/metrics/prometheus
+      interval: 15s
+      scrapeTimeout: 10s
+      scheme: http
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+{{- end }}

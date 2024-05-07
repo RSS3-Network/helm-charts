@@ -4,6 +4,7 @@ metadata:
   name: {{ template "vsl-rpc.fullname" . }}-geth
   labels:
     {{- include "vsl-rpc.labels" . | nindent 4 }}
+    app.kubernetes.io/component: geth
   {{- with .Values.service.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}

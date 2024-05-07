@@ -7,6 +7,7 @@ metadata:
   labels:
     {{- include "node.indexer.labels" (dict "context" $ "indexer" $indexer "component" "indexer") | nindent 4 }}
 spec:
+  replicas: 1
   selector:
     matchLabels:
       {{- include "node.indexer.selectorLabels" (dict "context" $ "indexer" $indexer "component" "indexer") | nindent 6 }}
