@@ -38,3 +38,5 @@ data:
     {{- toYaml .Values.stream | nindent 6 }}
     observability:
     {{- toYaml .Values.observability | nindent 6}}
+    endpoints:
+    {{- toYaml .Values.endpoints | nindent 6 }}
