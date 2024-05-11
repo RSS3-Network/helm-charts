@@ -89,7 +89,7 @@ global:
   #   whenUnsatisfiable: DoNotSchedule
 
   # Indexer resources
-  indexerResources:
+  workerResources:
     limits:
       cpu: 100m
       memory: 128Mi
@@ -306,7 +306,7 @@ configs:
   annotations: {}
 
 ## Node Indexer
-indexers: []
+workers: []
 #  - network: ethereum
 #    worker: fallback
 #    endpoint: https://rpc.ankr.com/eth

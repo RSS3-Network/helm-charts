@@ -90,25 +90,25 @@ Create the name of the Argo CD server service account to use
 {{- end -}}
 
 {{/*
-Create node indexer fullname
+Create node worker fullname
 */}}
-{{- define "node.indexer.name" -}}
+{{- define "node.worker.name" -}}
 {{- printf "%s" .id | replace "_" "-" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
-Create node indexer fullname
+Create node worker fullname
 */}}
-{{- define "node.indexer.fullname" -}}
-{{- printf "%s-%s" (include "node.fullname" .context) (include "node.indexer.name" .) | trunc 63 | trimSuffix "-" -}}
+{{- define "node.worker.fullname" -}}
+{{- printf "%s-%s" (include "node.fullname" .context) (include "node.worker.name" .) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
 Indexer labels
 */}}
-{{- define "node.indexer.labels" -}}
+{{- define "node.worker.labels" -}}
 helm.sh/chart: {{ include "node.chart" .context }}
-{{ include "node.indexer.selectorLabels" (dict "context" .context "component" .component "indexer" .indexer) }}
+{{ include "node.worker.selectorLabels" (dict "context" .context "component" .component "worker" .worker) }}
 {{- if .context.Chart.AppVersion }}
 app.kubernetes.io/version: {{ .context.Chart.AppVersion | quote }}
 {{- end }}
@@ -118,19 +118,19 @@ app.kubernetes.io/managed-by: {{ .context.Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "node.indexer.selectorLabels" -}}
+{{- define "node.worker.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "node.name" .context }}
 app.kubernetes.io/instance: {{ .context.Release.Name }}
 {{- if .component }}
 app.kubernetes.io/component: {{ .component }}
 {{- end -}}
-{{ include "node.indexer.commonLabels" .indexer }}
+{{ include "node.worker.commonLabels" .worker }}
 {{- end }}
 
 {{/*
-Common indexer labels
+Common worker labels
 */}}
-{{- define "node.indexer.commonLabels" -}}
+{{- define "node.worker.commonLabels" -}}
 {{- if .network }}
 node.rss3.io/network: {{ .network }}
 {{- end }}

@@ -94,7 +94,7 @@ The command removes all the Kubernetes components associated with the chart and 
 ### Node Indexer
 | Parameter | Description   | Default Value |
 |-----------|---------------|---------------|
-| indexers  | Node indexers | []            |
+| workers  | Node workers | []            |
 
 ### RSSHub
 | Parameter      | Description               | Default Value |
