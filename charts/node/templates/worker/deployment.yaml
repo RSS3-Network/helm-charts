@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ $indexer.nameOverride | default (include "node.indexer.fullname" (merge (dict "context" $) $indexer)) }}
+  name: {{ include "node.indexer.fullname" (merge (dict "context" $) $indexer) }}
   labels:
     {{- include "node.indexer.labels" (dict "context" $ "indexer" $indexer "component" "indexer") | nindent 4 }}
 spec:
@@ -28,7 +28,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "node.hub.ServiceAccountName" $ }}
+      serviceAccountName: {{ include "node.core.ServiceAccountName" $ }}
       securityContext:
         {{- toYaml $.Values.global.podSecurityContext | nindent 8 }}
       containers:

@@ -101,11 +101,11 @@ nameOverride: ""
 fullnameOverride: ""
 
 
-## Hub
-hub:
+## Core
+core:
   enabled: true
-  # -- RSS3 Node hub name
-  name: hub
+  # -- RSS3 Node core name
+  name: core
 
   replicaCount: 1
 
@@ -139,7 +139,7 @@ hub:
     # -- Create server service account
     create: true
     # -- Server service account name
-    name: node-hub
+    name: node-core
     # -- Annotations applied to created service account
     annotations: { }
     # -- Labels applied to created service account
@@ -209,7 +209,7 @@ hub:
 ## BroadCaster
 broadcaster:
   enabled: false
-  # -- RSS3 Node hub name
+  # -- RSS3 Node core name
   name: broadcaster
 
   service:

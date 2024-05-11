@@ -51,22 +51,22 @@ The command removes all the Kubernetes components associated with the chart and 
 | global.tolerations                      | Default tolerations for all components                                      | {}            |
 | global.affinity                         | Default affinity preset for all components                                  | {}            |
 
-### Hub
+### Core
 | Parameter                      | Description                                    | Default Value    |
 |--------------------------------|------------------------------------------------|------------------|
-| hub.name                       | RSS3 Node hub name                             | hub              |
-| hub.replicaCount               | Number of replicas                             | 1                |
-| hub.image.repository           | Image repository                               | rss3/node        |
-| hub.image.pullPolicy           | Image pull policy                              | IfNotPresent     |
-| hub.image.tag                  | Image tag                                      | ""               |
-| hub.imagePullSecrets           | Image pull secrets                             | []               |
-| hub.deploymentAnnotations      | Annotations to be added to server Deployment   | {}               |
-| hub.podAnnotations             | Annotations to be added to server pods         | {}               |
-| hub.podLabels                  | Labels to be added to server pods              | {}               |
-| hub.resources                  | Resource limits and requests for the Hub       | {}               |
-| hub.serviceAccount.create      | Create server service account                  | true             |
-| hub.serviceAccount.name        | Server service account name                    | node-hub |
-| hub.serviceAccount.annotations | Annotations applied to created service account | {}               |
+| core.name                       | RSS3 Node core name                             | core              |
+| core.replicaCount               | Number of replicas                             | 1                |
+| core.image.repository           | Image repository                               | rss3/node        |
+| core.image.pullPolicy           | Image pull policy                              | IfNotPresent     |
+| core.image.tag                  | Image tag                                      | ""               |
+| core.imagePullSecrets           | Image pull secrets                             | []               |
+| core.deploymentAnnotations      | Annotations to be added to server Deployment   | {}               |
+| core.podAnnotations             | Annotations to be added to server pods         | {}               |
+| core.podLabels                  | Labels to be added to server pods              | {}               |
+| core.resources                  | Resource limits and requests for the Core       | {}               |
+| core.serviceAccount.create      | Create server service account                  | true             |
+| core.serviceAccount.name        | Server service account name                    | node-core |
+| core.serviceAccount.annotations | Annotations applied to created service account | {}               |
 
 ### BroadCaster
 | Parameter                         | Description                                      | Default Value |
@@ -99,7 +99,7 @@ The command removes all the Kubernetes components associated with the chart and 
 ### RSSHub
 | Parameter      | Description               | Default Value |
 |----------------|---------------------------|---------------|
-| rsshub.enabled | Whether RSSHub is enabled | false         |
+| rsscore.enabled | Whether RSSHub is enabled | false         |
 
 For more information, please view [rsshub helm chart](https://github.com/NaturalSelectionLabs/helm-charts/tree/main/charts/rsshub)
 

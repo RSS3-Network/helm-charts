@@ -24,6 +24,7 @@ data:
         - network: {{ $indexer.network }}
           worker: {{ $indexer.worker }}
           endpoint: {{ $indexer.endpoint }}
+          id: {{ $indexer.id }}
           parameters:
         {{- toYaml $indexer.parameters | nindent 12 }}
       {{- end }}

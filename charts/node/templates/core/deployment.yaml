@@ -1,0 +1,90 @@
+{{- if .Values.core.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  {{- with (mergeOverwrite (deepCopy .Values.global.deploymentAnnotations) .Values.core.deploymentAnnotations) }}
+  annotations:
+    {{- range $key, $value := . }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+  name: {{ template "node.core.fullname" .}}
+  labels:
+    {{- include "node.labels" (dict "context" . "component" .Values.core.name "name" .Values.core.name) | nindent 4 }}
+spec:
+  {{- if not .Values.core.autoscaling.enabled }}
+  replicas: {{ .Values.core.replicaCount }}
+  {{- end }}
+  revisionHistoryLimit: {{ .Values.global.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      {{- include "node.selectorLabels" (dict "context" . "name" .Values.core.name) | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/configmap: {{ include "node.globalConfigCheckSum" .}}
+      {{- with (mergeOverwrite (deepCopy .Values.global.podAnnotations) .Values.core.podAnnotations) }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "node.labels" (dict "context" . "component" .Values.core.name "name" .Values.core.name) | nindent 8 }}
+ {{- with .Values.core.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.core.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.core.serviceAccount.create }}
+      serviceAccountName: {{ include "node.core.ServiceAccountName" . }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.core.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Values.core.name }}
+          securityContext:
+            {{- toYaml .Values.core.securityContext | nindent 12 }}
+          image: "{{ default .Values.global.image.repository .Values.core.image.repository }}:{{ (default .Values.global.image.tag .Values.core.image.tag) | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ default .Values.global.image.imagePullPolicy .Values.core.image.pullPolicy }}
+          args:
+            - --module=core
+          ports:
+            - name: http
+              containerPort: {{ .Values.core.service.port }}
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: 80
+          readinessProbe:
+            tcpSocket:
+              port: 80
+          resources:
+            {{- toYaml .Values.core.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/rss3/node
+          {{- with .Values.core.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "node.fullname" . }}
+            defaultMode: 0644
+      {{- with .Values.core.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.core.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.core.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.core.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

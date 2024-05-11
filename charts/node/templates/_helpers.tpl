@@ -72,20 +72,20 @@ Create the name of the service account to use
 {{- end }}
 
 {{/*
-Create node hub name and version as used by the chart label.
+Create node core name and version as used by the chart label.
 */}}
-{{- define "node.hub.fullname" -}}
-{{- printf "%s-%s" (include "node.fullname" .) .Values.hub.name | trunc 63 | trimSuffix "-" -}}
+{{- define "node.core.fullname" -}}
+{{- printf "%s-%s" (include "node.fullname" .) .Values.core.name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
 Create the name of the Argo CD server service account to use
 */}}
-{{- define "node.hub.ServiceAccountName" -}}
-{{- if .Values.hub.serviceAccount.create -}}
-    {{ default (include "node.hub.fullname" .) .Values.hub.serviceAccount.name }}
+{{- define "node.core.ServiceAccountName" -}}
+{{- if .Values.core.serviceAccount.create -}}
+    {{ default (include "node.core.fullname" .) .Values.core.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.hub.serviceAccount.name }}
+    {{ default "default" .Values.core.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
 
@@ -93,7 +93,7 @@ Create the name of the Argo CD server service account to use
 Create node indexer fullname
 */}}
 {{- define "node.indexer.name" -}}
-{{- printf "%s-%s" .network .worker | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s" .id | replace "_" "-" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -140,7 +140,7 @@ node.rss3.io/worker: {{ .worker }}
 {{- end }}
 
 {{/*
-Create node hub name and version as used by the chart label.
+Create node core name and version as used by the chart label.
 */}}
 {{- define "node.broadcaster.fullname" -}}
 {{- printf "%s-%s" (include "node.fullname" .) .Values.broadcaster.name | trunc 63 | trimSuffix "-" -}}
