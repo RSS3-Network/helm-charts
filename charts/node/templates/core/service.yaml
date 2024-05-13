@@ -19,5 +19,5 @@ spec:
       nodePort: {{ .Values.core.service.nodePort }}
       {{- end }}
   selector:
-    {{- include "node.selectorLabels" (dict "context" . "name" .Values.core.name) | nindent 4 }}
+    {{- include "node.selectorLabels" (dict "context" . "name" .Values.core.name "component" .Values.core.name) | nindent 4 }}
 {{- end }}
