@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  {{- with (mergeOverwrite (deepCopy .Values.global.deploymentAnnotations) .Values.agent.deploymentAnnotations) }}
+  annotations:
+    {{- range $key, $value := . }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+  name: {{ template "node.agent.fullname" .}}
+  labels:
+    {{- include "node.labels" (dict "context" . "component" .Values.agent.name "name" .Values.agent.name) | nindent 4 }}
+spec:
+  replicas: {{ .Values.agent.replicaCount }}
+  revisionHistoryLimit: {{ .Values.global.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      {{- include "node.selectorLabels" (dict "context" . "name" .Values.agent.name) | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/configmap: {{ include "node.globalConfigCheckSum" .}}
+      {{- with (mergeOverwrite (deepCopy .Values.global.podAnnotations) .Values.agent.podAnnotations) }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "node.labels" (dict "context" . "component" .Values.agent.name "name" .Values.agent.name) | nindent 8 }}
+ {{- with .Values.agent.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.agent.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.agent.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Values.agent.name }}
+          securityContext:
+            {{- toYaml .Values.agent.securityContext | nindent 12 }}
+          image: "{{ default .Values.global.image.repository .Values.agent.image.repository }}:{{ (default .Values.global.image.tag .Values.agent.image.tag) | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ default .Values.global.image.imagePullPolicy .Values.agent.image.pullPolicy }}
+          args:
+            - --module=monitor
+          resources:
+            {{- toYaml .Values.agent.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/rss3/node
+          {{- with .Values.agent.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "node.fullname" . }}
+            defaultMode: 0644
+      {{- with .Values.agent.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.agent.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.agent.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.agent.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

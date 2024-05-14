@@ -293,6 +293,70 @@ broadcaster:
 
   affinity: { }
 
+## Agent
+## BroadCaster
+agent:
+  name: agent
+
+  replicaCount: 1
+
+  image:
+    repository: rss3/node
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+
+  imagePullSecrets: [ ]
+
+  # -- Annotations to be added to server Deployment
+  deploymentAnnotations: { }
+
+  # -- Annotations to be added to server pods
+  podAnnotations: { }
+
+  # -- Labels to be added to server pods
+  podLabels: { }
+
+  # -- Resource limits and requests for the BroadCaster
+  resources: { }
+  #  limits:
+  #    cpu: 100m
+  #    memory: 128Mi
+  #  requests:
+  #    cpu: 50m
+  #    memory: 64Mi
+
+
+  podSecurityContext: { }
+  # fsGroup: 2000
+
+  securityContext: { }
+    # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+  # Additional volumes on the output Deployment definition.
+  volumes: [ ]
+  # - name: foo
+  #   secret:
+  #     secretName: mysecret
+  #     optional: false
+
+  # Additional volumeMounts on the output Deployment definition.
+  volumeMounts: [ ]
+  # - name: foo
+  #   mountPath: "/etc/foo"
+  #   readOnly: true
+
+  nodeSelector: { }
+
+  tolerations: [ ]
+
+  affinity: { }
+
 ## Node Configs
 configs:
   environment: development

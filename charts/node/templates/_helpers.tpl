@@ -140,8 +140,16 @@ node.rss3.io/worker: {{ .worker }}
 {{- end }}
 
 {{/*
-Create node core name and version as used by the chart label.
+Create node broadcaster name and version as used by the chart label.
 */}}
 {{- define "node.broadcaster.fullname" -}}
 {{- printf "%s-%s" (include "node.fullname" .) .Values.broadcaster.name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create node agent name and version as used by the chart label.
+*/}}
+{{- define "node.agent.fullname" -}}
+{{- printf "%s-%s" (include "node.fullname" .) .Values.agent.name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
