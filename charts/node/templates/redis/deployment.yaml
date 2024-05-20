@@ -10,7 +10,7 @@ spec:
   revisionHistoryLimit: {{ .Values.global.revisionHistoryLimit }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "node.name" . }}-{{ .Values.redis.name }}
+      {{- include "node.selectorLabels" (dict "context" . "name" .Values.redis.name) | nindent 6 }}
   template:
     metadata:
       labels:
@@ -152,43 +152,43 @@ spec:
         {{- toYaml . | nindent 10 }}
       {{- end }}
     {{- end }}
-    {{- with .Values.redis.extraContainers }}
-      {{- tpl (toYaml .) $ | nindent 6 }}
-    {{- end }}
-    {{- with .Values.redis.initContainers }}
-    initContainers:
-      {{- tpl (toYaml .) $ | nindent 6 }}
-    {{- end }}
-    {{- with .Values.redis.nodeSelector | default .Values.global.nodeSelector }}
-    nodeSelector:
-      {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.redis.tolerations | default .Values.global.tolerations }}
-    tolerations:
-      {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.redis.topologySpreadConstraints | default .Values.global.topologySpreadConstraints }}
-    topologySpreadConstraints:
-      {{- range $constraint := . }}
-      - {{ toYaml $constraint | nindent 8 | trim }}
-      {{- if not $constraint.labelSelector }}
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/name: {{ include "node.name" $ }}-{{ $.Values.redis.name }}
+      {{- with .Values.redis.extraContainers }}
+        {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}
+      {{- with .Values.redis.initContainers }}
+      initContainers:
+        {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}
-    {{- end }}
-    volumes:
-      - name: health
-        configMap:
-          name: {{ include "node.redis.fullname" . }}-health-configmap
-          defaultMode: 493
-    {{- with .Values.redis.volumes }}
-      {{- toYaml . | nindent 8}}
-    {{- end }}
-    {{- with .Values.redis.dnsConfig }}
-    dnsConfig:
-      {{- toYaml . | nindent 8 }}
-    {{- end }}
-    dnsPolicy: {{ .Values.redis.dnsPolicy }}
+      {{- with .Values.redis.nodeSelector | default .Values.global.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.redis.tolerations | default .Values.global.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.redis.topologySpreadConstraints | default .Values.global.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- range $constraint := . }}
+        - {{ toYaml $constraint | nindent 8 | trim }}
+        {{- if not $constraint.labelSelector }}
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: {{ include "node.name" $ }}-{{ $.Values.redis.name }}
+        {{- end }}
+        {{- end }}
+      {{- end }}
+      volumes:
+        - name: health
+          configMap:
+            name: {{ include "node.redis.fullname" . }}-health-configmap
+            defaultMode: 493
+      {{- with .Values.redis.volumes }}
+        {{- toYaml . | nindent 8}}
+      {{- end }}
+      {{- with .Values.redis.dnsConfig }}
+      dnsConfig:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      dnsPolicy: {{ .Values.redis.dnsPolicy }}
 {{- end }}
