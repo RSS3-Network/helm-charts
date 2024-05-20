@@ -18,7 +18,7 @@ spec:
   revisionHistoryLimit: {{ .Values.global.revisionHistoryLimit }}
   selector:
     matchLabels:
-      {{- include "node.selectorLabels" (dict "context" . "name" .Values.core.name) | nindent 6 }}
+      {{- include "node.selectorLabels" (dict "context" . "name" .Values.core.name "component" .Values.core.name) | nindent 6 }}
   template:
     metadata:
       annotations:

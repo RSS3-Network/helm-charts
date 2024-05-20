@@ -20,5 +20,5 @@ spec:
       port: {{ .Values.redis.servicePort }}
       targetPort: redis
   selector:
-    {{- include "node.selectorLabels" (dict "context" . "name" .Values.redis.name) | nindent 4 }}
+    {{- include "node.selectorLabels" (dict "context" . "name" .Values.redis.name "component" .Values.redis.name) | nindent 4 }}
 {{- end }}
