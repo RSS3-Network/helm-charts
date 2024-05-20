@@ -1,0 +1,31 @@
+{{- if and .Values.redis.enabled .Values.redis.metrics.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "node.redis.fullname" . }}-metrics
+  labels:
+    {{- include "node.labels" (dict "context" . "component" .Values.redis.name "name" .Values.redis.name) | nindent 4 }}
+    {{- with .Values.redis.metrics.service.labels }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- if or .Values.redis.metrics.service.annotations .Values.global.addPrometheusAnnotations }}
+  annotations:
+    prometheus.io/port: {{ .Values.redis.metrics.service.servicePort | quote }}
+    prometheus.io/scrape: "true"
+    {{- range $key, $value := .Values.redis.metrics.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  type: {{ .Values.redis.metrics.service.type }}
+  {{- if and .Values.redis.metrics.service.clusterIP (eq .Values.redis.metrics.service.type "ClusterIP") }}
+  clusterIP: {{ .Values.redis.metrics.service.clusterIP }}
+  {{- end }}
+  ports:
+    - name: {{ .Values.redis.metrics.service.portName }}
+      protocol: TCP
+      port: {{ .Values.redis.metrics.service.servicePort }}
+      targetPort: metrics
+  selector:
+    {{- include "node.selectorLabels" (dict "context" . "component" .Values.redis.name "name" .Values.redis.name) | nindent 4 }}
+{{- end }}

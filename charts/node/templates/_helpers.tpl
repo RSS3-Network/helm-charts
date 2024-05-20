@@ -72,6 +72,17 @@ Create the name of the service account to use
 {{- end }}
 
 {{/*
+Create the name of the redis service account to use
+*/}}
+{{- define "node.redis.serviceAccountName" -}}
+{{- if .Values.redis.serviceAccount.create -}}
+    {{ default (include "node.redis.fullname" .) .Values.redis.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.redis.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Create node core name and version as used by the chart label.
 */}}
 {{- define "node.core.fullname" -}}
@@ -153,3 +164,9 @@ Create node agent name and version as used by the chart label.
 {{- printf "%s-%s" (include "node.fullname" .) .Values.agent.name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{/*
+Create node agent name and version as used by the chart label.
+*/}}
+{{- define "node.redis.fullname" -}}
+{{- printf "%s-%s" (include "node.fullname" .) .Values.redis.name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
