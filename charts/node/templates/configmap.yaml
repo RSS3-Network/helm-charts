@@ -35,7 +35,8 @@ data:
     {{- toYaml .Values.database | nindent 6 }}
     redis:
     {{- if .Values.redis.enabled }}
-      endpoint: {{ template "node.redis.fullname" . }}:{{ .Values.redis.servicePort }}
+      endpoint:
+        - {{ include "node.redis.fullname" . }}:{{ .Values.redis.servicePort }}
     {{- else }}
     {{- toYaml .Values.externalRedis | nindent 6 }}
     {{- end}}
