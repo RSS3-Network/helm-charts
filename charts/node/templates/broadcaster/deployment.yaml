@@ -42,30 +42,6 @@ spec:
             {{- toYaml .Values.broadcaster.securityContext | nindent 12 }}
           image: "{{ default .Values.global.image.repository .Values.broadcaster.image.repository }}:{{ (default .Values.global.image.tag .Values.broadcaster.image.tag) | default .Chart.AppVersion }}"
           imagePullPolicy: {{ default .Values.global.image.imagePullPolicy .Values.broadcaster.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-              scheme: HTTP
-            initialDelaySeconds: 30
-            timeoutSeconds: 1
-            periodSeconds: 10
-            successThreshold: 1
-            failureThreshold: 3
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-              scheme: HTTP
-            initialDelaySeconds: 10
-            timeoutSeconds: 1
-            periodSeconds: 10
-            successThreshold: 1
-            failureThreshold: 3
           args:
             - --module=broadcaster
           resources:
