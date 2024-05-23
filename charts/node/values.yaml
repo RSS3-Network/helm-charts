@@ -339,7 +339,7 @@ agent:
 configs:
   environment: development
   discovery:
-    maintainer:
+    operator:
       evm_address: # address to receive network incentivization and ownership verification
       signature:
     server:
