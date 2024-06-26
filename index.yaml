@@ -261,6 +261,30 @@ entries:
     urls:
     - https://github.com/RSS3-Network/helm-charts/releases/download/chain-0.1.0/chain-0.1.0.tgz
     version: 0.1.0
+  mastodon:
+  - apiVersion: v2
+    appVersion: v4.2.8
+    created: "2024-06-26T06:48:32.344837957Z"
+    dependencies:
+    - condition: elasticsearch.enabled
+      name: elasticsearch
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 19.19.2
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 14.2.3
+    - condition: redis.enabled
+      name: redis
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 18.16.1
+    description: Mastodon is a free, open-source social network server based on ActivityPub.
+    digest: 87e7bde7cfbcf8a62437bcb8f9451beb48ec7a249736e569f808b80e77036999
+    name: mastodon
+    type: application
+    urls:
+    - https://github.com/RSS3-Network/helm-charts/releases/download/mastodon-5.1.1/mastodon-5.1.1.tgz
+    version: 5.1.1
   node:
   - apiVersion: v2
     appVersion: v0.5.20
@@ -1366,4 +1390,4 @@ entries:
     urls:
     - https://github.com/RSS3-Network/helm-charts/releases/download/vsl-sequencer-0.1.0/vsl-sequencer-0.1.0.tgz
     version: 0.1.0
-generated: "2024-06-25T04:42:53.901022011Z"
+generated: "2024-06-26T06:48:32.344973289Z"
