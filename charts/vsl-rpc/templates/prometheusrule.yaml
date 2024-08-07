@@ -1,0 +1,26 @@
+{{- if .Values.prometheusrule.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ template "vsl-rpc.fullname" . }}
+  labels:
+    {{- include "vsl-rpc.labels" . | nindent 4 }}
+  {{- with .Values.prometheusrule.additionalAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  groups:
+    - name: {{ template "vsl-rpc.fullname" . }}
+      {{- with .Values.prometheusrule.spec }}
+      rules:
+      {{- range . }}
+        - alert: {{ .alert }}
+          expr: |-
+            {{ tpl .expr $ }}
+          for: {{ .for }}
+          labels: {{ toYaml .labels | nindent 12 }}
+          annotations: {{ toYaml .annotations | nindent 12 }}
+      {{- end }}
+      {{- end }}
+{{- end }}

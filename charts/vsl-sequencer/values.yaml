@@ -9,6 +9,8 @@ vsl-sequencer:
       - --sequencer.enabled=true
       - --sequencer.stopped=true
       - --rpc.enable-admin=true
+  prometheusrule:
+    enabled: true
 
 externalService:
   enabled: false

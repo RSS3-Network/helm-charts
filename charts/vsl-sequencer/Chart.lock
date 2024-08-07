@@ -1,12 +1,12 @@
 dependencies:
 - name: vsl-rpc
   repository: file://../vsl-rpc
-  version: 0.2.0
+  version: 0.2.1
 - name: op-batcher
   repository: file://../op-batcher
   version: 0.1.0
 - name: op-proposer
   repository: file://../op-proposer
   version: 0.1.0
-digest: sha256:af18a0542005b0ebcc31de78dedf19fa5cc4865f76ee2cc9f8f9e7970c2d2de3
-generated: "2024-05-07T13:44:25.912371+08:00"
+digest: sha256:7711bc7a1c3e1241ff922aa541e25b53a88a3f97b72010d1abeb11214eca73d5
+generated: "2024-08-07T16:49:53.811117+08:00"

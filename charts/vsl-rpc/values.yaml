@@ -248,3 +248,21 @@ affinity: {}
 
 servicemonitor:
   enabled: false
+prometheusrule:
+  enabled: false
+  # Additional labels for PrometheusRule alerts
+  additionalLabels: {}
+  # Additional annotations for PrometheusRule alerts
+  additionalAnnotations: {}
+  # Spec rule for PrometheusRule alerts
+  spec:
+    - alert: L2SafeSyncRateLow
+      expr: |
+        rate(sum(op_node_default_refs_number{layer="l2", type="l2_safe",job="{{ template "vsl-rpc.fullname" . }}-node"}) by (pod)[5m]) < 0.1
+      for: 5m
+      labels:
+        severity: warning
+        chain: vsl
+      annotations:
+        summary: L2 Safe sync rate is below 10%
+        description: "Cluster {{ $labels.cluster_name }} pod {{ $labels.pod }} has a sync rate below 10% for the last 5 minutes."
