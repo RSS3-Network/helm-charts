@@ -7,7 +7,7 @@ replicaCount: 1
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
-
+clustername: "vsl"
 clusterDomain: cluster.local
 
 updateStrategy:
@@ -258,7 +258,7 @@ prometheusrule:
   spec:
     - alert: L2SafeSyncRateLow
       expr: |
-        rate(sum(op_node_default_refs_number{layer="l2", type="l2_safe",job="{{ template "vsl-rpc.fullname" . }}-node"}) by (pod)[5m]) < 0.1
+        rate(sum(op_node_default_refs_number{layer="l2", type="l2_safe",job="{{ template "vsl-rpc.fullname" . }}-node"}) by (pod,cluster_name,namespace,job)[5m]) < 0.1
       for: 5m
       labels:
         severity: warning
