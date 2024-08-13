@@ -1,4 +1,4 @@
-# node Helm Chart
+# RSS3 Node Helm Chart
 
 ## Get Repo Info
 
