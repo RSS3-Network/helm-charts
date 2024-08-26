@@ -346,6 +346,7 @@ configs:
     server:
       endpoint: # link to your website
       global_indexer_endpoint: https://gi.rss3.dev/ # link to global indexer
+      access_token: "" # Use access_token to protect your Node from unauthorized access.
   annotations: {}
 
 ## Node Indexer
@@ -382,7 +383,7 @@ additionalRSS:
 
 ## Database
 database:
-  driver: cockroachdb
+  driver: postgres
   partition: true
   uri: postgres://root@localhost:26257/defaultdb
 
