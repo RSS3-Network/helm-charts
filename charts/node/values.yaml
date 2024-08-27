@@ -372,14 +372,14 @@ rsshub:
   enabled: false
 
 additionalRSS:
-  - network: rss
-    endpoint: https://rsshub.app/
-    parameters:
-      authentication:
-        username:
-        password:
-        access_key:
-        access_code:
+  network: rss
+  endpoint: https://rsshub.app/
+  parameters:
+    authentication:
+      username:
+      password:
+      access_key:
+      access_code:
 
 ## Database
 database:
