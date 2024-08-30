@@ -87,7 +87,7 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with (mergeOverwrite (deepCopy .Values.global.tolerations) .Values.core.tolerations) }}
+      {{- with .Values.core.tolerations | default .Values.global.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
