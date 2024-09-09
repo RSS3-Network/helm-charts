@@ -97,6 +97,12 @@ global:
       cpu: 50m
       memory: 64Mi
 
+  # -- Default [env] variables for all components
+  env: []
+
+  # -- Default [envFrom] variables for all components
+  envFrom: []
+
 nameOverride: ""
 fullnameOverride: ""
 
@@ -116,6 +122,9 @@ core:
     tag: ""
 
   imagePullSecrets: [ ]
+
+  env: [ ]
+  envFrom: [ ]
 
   # -- Annotations to be added to server Deployment
   deploymentAnnotations: { }
@@ -222,6 +231,9 @@ broadcaster:
 
   imagePullSecrets: [ ]
 
+  env: [ ]
+  envFrom: [ ]
+
   # -- Annotations to be added to server Deployment
   deploymentAnnotations: { }
 
@@ -285,6 +297,9 @@ agent:
     tag: ""
 
   imagePullSecrets: [ ]
+
+  env: [ ]
+  envFrom: [ ]
 
   # -- Annotations to be added to server Deployment
   deploymentAnnotations: { }

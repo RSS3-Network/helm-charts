@@ -71,6 +71,14 @@ spec:
           {{- end }}
           resources:
             {{- toYaml ($worker.resources | default $.Values.global.workerResources ) | nindent 12 }}
+          {{- with .Values.global.env }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.broadcaster.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
       volumes:
         - name: config
           configMap:
