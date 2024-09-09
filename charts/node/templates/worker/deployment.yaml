@@ -71,11 +71,11 @@ spec:
           {{- end }}
           resources:
             {{- toYaml ($worker.resources | default $.Values.global.workerResources ) | nindent 12 }}
-          {{- with .Values.global.env }}
+          {{- with $.Values.global.env }}
           env:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.broadcaster.envFrom }}
+          {{- with $.Values.global.envFrom }}
           envFrom:
             {{- toYaml . | nindent 12 }}
           {{- end }}
