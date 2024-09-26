@@ -1,4 +1,4 @@
-{{- range $key, $worker :=  .Values.worker }}
+{{- range $key, $worker :=  .Values.federated }}
 ---
 apiVersion: apps/v1
 kind: Deployment
