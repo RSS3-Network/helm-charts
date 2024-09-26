@@ -288,6 +288,21 @@ entries:
   node:
   - apiVersion: v2
     appVersion: v1.0.2
+    created: "2024-09-26T06:43:39.128373809Z"
+    dependencies:
+    - condition: rsshub.enabled
+      name: rsshub
+      repository: https://naturalselectionlabs.github.io/helm-charts
+      version: 0.2.9
+    description: A Helm chart for Kubernetes
+    digest: d8cc02e50656a6c1167b0b1ae1c8d8f829056c5f52d94b9d1ace66e99cf9f050
+    name: node
+    type: application
+    urls:
+    - https://github.com/RSS3-Network/helm-charts/releases/download/node-0.5.8/node-0.5.8.tgz
+    version: 0.5.8
+  - apiVersion: v2
+    appVersion: v1.0.2
     created: "2024-09-26T05:12:57.524359696Z"
     dependencies:
     - condition: rsshub.enabled
@@ -1610,4 +1625,4 @@ entries:
     urls:
     - https://github.com/RSS3-Network/helm-charts/releases/download/vsl-sequencer-0.1.0/vsl-sequencer-0.1.0.tgz
     version: 0.1.0
-generated: "2024-09-26T05:12:57.524779248Z"
+generated: "2024-09-26T06:43:39.128764499Z"
