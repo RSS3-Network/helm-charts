@@ -1,16 +1,16 @@
-{{- range $key, $federated :=  .Values.federated }}
+{{- range $key, $worker :=  .Values.worker }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "node.federated.fullname" (merge (dict "context" $) $federated) }}
+  name: {{ include "node.worker.fullname" (merge (dict "context" $) $worker) }}
   labels:
-    {{- include "node.federated.labels" (dict "context" $ "federated" $federated "component" "federated") | nindent 4 }}
+    {{- include "node.worker.labels" (dict "context" $ "worker" $worker "component" "worker") | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "node.federated.selectorLabels" (dict "context" $ "federated" $federated "component" "federated") | nindent 6 }}
+      {{- include "node.worker.selectorLabels" (dict "context" $ "worker" $worker "component" "worker") | nindent 6 }}
   template:
     metadata:
       annotations:
@@ -19,7 +19,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "node.federated.labels" (dict "context" $ "federated" $federated "component" "federated") | nindent 8 }}
+        {{- include "node.worker.labels" (dict "context" $ "worker" $worker "component" "worker") | nindent 8 }}
   {{- with $.Values.global.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -32,13 +32,13 @@ spec:
       securityContext:
         {{- toYaml $.Values.global.podSecurityContext | nindent 8 }}
       containers:
-        - name: federated
+        - name: worker
           securityContext:
             {{- toYaml $.Values.global.securityContext | nindent 12 }}
           image: "{{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag | default $.Chart.AppVersion }}"
           args:
-            - '--module=federated'
-            - '--federated.id={{ $federated.id }}'
+            - '--module=worker'
+            - '--worker.id={{ $worker.id }}'
           imagePullPolicy: {{ $.Values.global.image.imagePullPolicy }}
           volumeMounts:
             - name: config
@@ -70,7 +70,7 @@ spec:
             failureThreshold: 3
           {{- end }}
           resources:
-            {{- toYaml ($federated.resources | default $.Values.global.federatedResources ) | nindent 12 }}
+            {{- toYaml ($worker.resources | default $.Values.global.workerResources ) | nindent 12 }}
           {{- with $.Values.global.env }}
           env:
             {{- toYaml . | nindent 12 }}

@@ -151,56 +151,6 @@ node.rss3.io/worker: {{ .worker }}
 {{- end }}
 
 {{/*
-Create node worker fullname
-*/}}
-{{- define "node.federated.name" -}}
-{{- printf "%s" .id | replace "_" "-" | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
-{{/*
-Create node worker fullname
-*/}}
-{{- define "node.federated.fullname" -}}
-{{- printf "%s-%s" (include "node.fullname" .context) (include "node.federated.name" .) | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
-{{/*
-Indexer labels
-*/}}
-{{- define "node.federated.labels" -}}
-helm.sh/chart: {{ include "node.chart" .context }}
-{{ include "node.federated.selectorLabels" (dict "context" .context "component" .component "federated" .federated) }}
-{{- if .context.Chart.AppVersion }}
-app.kubernetes.io/version: {{ .context.Chart.AppVersion | quote }}
-{{- end }}
-app.kubernetes.io/managed-by: {{ .context.Release.Service }}
-{{- end }}
-
-{{/*
-Selector labels
-*/}}
-{{- define "node.federated.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "node.name" .context }}
-app.kubernetes.io/instance: {{ .context.Release.Name }}
-{{- if .component }}
-app.kubernetes.io/component: {{ .component }}
-{{- end -}}
-{{ include "node.federated.commonLabels" .worker }}
-{{- end }}
-
-{{/*
-Common worker labels
-*/}}
-{{- define "node.federated.commonLabels" -}}
-{{- if .network }}
-node.rss3.io/network: {{ .network }}
-{{- end }}
-{{- if .worker }}
-node.rss3.io/federated: {{ .federated }}
-{{- end }}
-{{- end }}
-
-{{/*
 Create node broadcaster name and version as used by the chart label.
 */}}
 {{- define "node.broadcaster.fullname" -}}
