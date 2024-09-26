@@ -1,0 +1,91 @@
+{{- range $key, $federated :=  .Values.federated }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "node.federated.fullname" (merge (dict "context" $) $federated) }}
+  labels:
+    {{- include "node.federated.labels" (dict "context" $ "federated" $federated "component" "federated") | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "node.federated.selectorLabels" (dict "context" $ "federated" $federated "component" "federated") | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/configmap: {{ include "node.globalConfigCheckSum" $}}
+      {{- with $.Values.global.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "node.federated.labels" (dict "context" $ "federated" $federated "component" "federated") | nindent 8 }}
+  {{- with $.Values.global.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with $.Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "node.core.ServiceAccountName" $ }}
+      securityContext:
+        {{- toYaml $.Values.global.podSecurityContext | nindent 8 }}
+      containers:
+        - name: federated
+          securityContext:
+            {{- toYaml $.Values.global.securityContext | nindent 12 }}
+          image: "{{ $.Values.global.image.repository }}:{{ $.Values.global.image.tag | default $.Chart.AppVersion }}"
+          args:
+            - '--module=federated'
+            - '--federated.id={{ $federated.id }}'
+          imagePullPolicy: {{ $.Values.global.image.imagePullPolicy }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/rss3/node
+          {{- if $.Values.observability.opentelemetry.metrics.enable }}
+          ports:
+            - containerPort: 9090
+              name: metrics
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthcheck
+              port: metrics
+              scheme: HTTP
+            initialDelaySeconds: 120
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /healthcheck
+              port: metrics
+              scheme: HTTP
+            initialDelaySeconds: 60
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          {{- end }}
+          resources:
+            {{- toYaml ($federated.resources | default $.Values.global.federatedResources ) | nindent 12 }}
+          {{- with $.Values.global.env }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $.Values.global.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "node.fullname" $ }}
+            defaultMode: 0644
+      {{- with $.Values.global.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

@@ -373,6 +373,14 @@ workers: []
 #      block_number_start: 14748840
 #    resources: {}
 
+federated:
+  - id: mastodon-core
+    network: mastodon
+    worker: mastodon
+    endpoint: mastodon
+    parameters:
+      kafka_topic:
+
 #   Indexer resources
 #      resources:
 #        limits:
