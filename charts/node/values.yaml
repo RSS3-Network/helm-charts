@@ -395,6 +395,7 @@ rsshub:
   enabled: false
 
 additionalRSS:
+  id: rsshub-core
   network: rsshub
   worker: core
   endpoint: https://your-rsshub-endpoint
