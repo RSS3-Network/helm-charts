@@ -396,6 +396,7 @@ rsshub:
 
 additionalRSS:
   network: rsshub
+  worker: core
   endpoint: https://your-rsshub-endpoint
   parameters:
     authentication:
