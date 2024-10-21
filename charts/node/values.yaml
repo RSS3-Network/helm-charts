@@ -376,7 +376,7 @@ workers: []
 federated:
   - id: mastodon-core
     network: mastodon
-    worker: mastodon
+    worker: core
     endpoint: mastodon
     parameters:
       kafka_topic:
@@ -395,8 +395,8 @@ rsshub:
   enabled: false
 
 additionalRSS:
-  network: rss
-  endpoint: https://rsshub.app/
+  network: rsshub
+  endpoint: https://your-rsshub-endpoint
   parameters:
     authentication:
       username:
