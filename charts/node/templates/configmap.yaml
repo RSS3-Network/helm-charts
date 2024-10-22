@@ -13,7 +13,6 @@ metadata:
 data:
   config.yaml: |
     environment: {{ .Values.configs.environment }}
-    type: {{ .Values.configs.type }}
     discovery:
     {{- toYaml .Values.configs.discovery | nindent 6}}
     component:

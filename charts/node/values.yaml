@@ -353,7 +353,6 @@ agent:
 ## Node Configs
 configs:
   environment: development
-  type: beta
   discovery:
     operator:
       evm_address: # address to receive network incentivization and ownership verification
@@ -376,7 +375,7 @@ workers: []
 federated:
   - id: mastodon-core
     network: mastodon
-    worker: mastodon
+    worker: core
     endpoint: mastodon
     parameters:
       kafka_topic:
@@ -395,8 +394,10 @@ rsshub:
   enabled: false
 
 additionalRSS:
-  network: rss
-  endpoint: https://rsshub.app/
+  id: rsshub-core
+  network: rsshub
+  worker: core
+  endpoint: https://your-rsshub-endpoint
   parameters:
     authentication:
       username:
