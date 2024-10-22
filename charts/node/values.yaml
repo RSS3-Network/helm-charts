@@ -353,7 +353,6 @@ agent:
 ## Node Configs
 configs:
   environment: development
-  type: beta
   discovery:
     operator:
       evm_address: # address to receive network incentivization and ownership verification
