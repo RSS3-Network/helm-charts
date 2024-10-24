@@ -283,9 +283,8 @@ broadcaster:
 
   affinity: { }
 
-## Agent
-## BroadCaster
-agent:
+## Node monitorx
+monitorx:
   name: agent
 
   replicaCount: 1
@@ -372,13 +371,13 @@ workers: []
 #      block_number_start: 14748840
 #    resources: {}
 
-federated:
-  - id: mastodon-core
-    network: mastodon
-    worker: core
-    endpoint: mastodon
-    parameters:
-      kafka_topic:
+federated: []
+#  - id: mastodon-core
+#    network: mastodon
+#    worker: core
+#    endpoint: mastodon
+#    parameters:
+#      kafka_topic:
 
 #   Indexer resources
 #      resources:

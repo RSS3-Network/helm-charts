@@ -158,14 +158,14 @@ Create node broadcaster name and version as used by the chart label.
 {{- end -}}
 
 {{/*
-Create node agent name and version as used by the chart label.
+Create node monitorx name and version as used by the chart label.
 */}}
-{{- define "node.agent.fullname" -}}
-{{- printf "%s-%s" (include "node.fullname" .) .Values.agent.name | trunc 63 | trimSuffix "-" -}}
+{{- define "node.monitorx.fullname" -}}
+{{- printf "%s-%s" (include "node.fullname" .) .Values.monitorx.name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
-Create node agent name and version as used by the chart label.
+Create node monitorx name and version as used by the chart label.
 */}}
 {{- define "node.redis.fullname" -}}
 {{- printf "%s-%s" (include "node.fullname" .) .Values.redis.name | trunc 63 | trimSuffix "-" -}}

@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  {{- with (mergeOverwrite (deepCopy .Values.global.deploymentAnnotations) .Values.monitorx.deploymentAnnotations) }}
+  annotations:
+    {{- range $key, $value := . }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+  name: {{ template "node.monitorx.fullname" .}}
+  labels:
+    {{- include "node.labels" (dict "context" . "component" .Values.monitorx.name "name" .Values.monitorx.name) | nindent 4 }}
+spec:
+  replicas: {{ .Values.monitorx.replicaCount }}
+  revisionHistoryLimit: {{ .Values.global.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      {{- include "node.selectorLabels" (dict "context" . "name" .Values.monitorx.name) | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/configmap: {{ include "node.globalConfigCheckSum" .}}
+      {{- with (mergeOverwrite (deepCopy .Values.global.podAnnotations) .Values.monitorx.podAnnotations) }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "node.labels" (dict "context" . "component" .Values.monitorx.name "name" .Values.monitorx.name) | nindent 8 }}
+ {{- with .Values.monitorx.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.monitorx.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.monitorx.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Values.monitorx.name }}
+          securityContext:
+            {{- toYaml .Values.monitorx.securityContext | nindent 12 }}
+          image: "{{ default .Values.global.image.repository .Values.monitorx.image.repository }}:{{ (default .Values.global.image.tag .Values.monitorx.image.tag) | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ default .Values.global.image.imagePullPolicy .Values.monitorx.image.pullPolicy }}
+          args:
+            - --module=monitor
+          resources:
+            {{- toYaml .Values.monitorx.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/rss3/node
+          {{- with .Values.monitorx.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with concat .Values.global.env .Values.monitorx.env }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with concat .Values.global.envFrom .Values.monitorx.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "node.fullname" . }}
+            defaultMode: 0644
+      {{- with .Values.monitorx.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.monitorx.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.monitorx.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.monitorx.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
