@@ -285,7 +285,7 @@ broadcaster:
 
 ## Node monitorx
 monitorx:
-  name: agent
+  name: monitor
 
   replicaCount: 1
 
