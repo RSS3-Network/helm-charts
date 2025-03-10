@@ -73,7 +73,8 @@ global:
       # -- Default node affinity rules. Either: `none`, `soft` or `hard`
       type: hard
       # -- Default match expressions for node affinity
-      matchExpressions: []
+      matchExpressions:
+        []
         # - key: topology.kubernetes.io/zone
         #   operator: In
         #   values:
@@ -83,7 +84,8 @@ global:
   # -- Default [TopologySpreadConstraints] rules for all components
   ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
   ## If labelSelector is left out, it will default to the labelSelector of the component
-  topologySpreadConstraints: []
+  topologySpreadConstraints:
+    []
     # - maxSkew: 1
     #   topologyKey: topology.kubernetes.io/zone
   #   whenUnsatisfiable: DoNotSchedule
@@ -106,7 +108,6 @@ global:
 nameOverride: ""
 fullnameOverride: ""
 
-
 ## Core
 core:
   enabled: true
@@ -121,22 +122,22 @@ core:
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
 
-  imagePullSecrets: [ ]
+  imagePullSecrets: []
 
-  env: [ ]
-  envFrom: [ ]
+  env: []
+  envFrom: []
 
   # -- Annotations to be added to server Deployment
-  deploymentAnnotations: { }
+  deploymentAnnotations: {}
 
   # -- Annotations to be added to server pods
-  podAnnotations: { }
+  podAnnotations: {}
 
   # -- Labels to be added to server pods
-  podLabels: { }
+  podLabels: {}
 
   # -- Resource limits and requests for the Argo CD server
-  resources: { }
+  resources: {}
   #  limits:
   #    cpu: 100m
   #    memory: 128Mi
@@ -150,16 +151,17 @@ core:
     # -- Server service account name
     name: node-core
     # -- Annotations applied to created service account
-    annotations: { }
+    annotations: {}
     # -- Labels applied to created service account
-    labels: { }
+    labels: {}
     # -- Automount API credentials for the Service Account
     automountServiceAccountToken: true
 
-  podSecurityContext: { }
+  podSecurityContext: {}
   # fsGroup: 2000
 
-  securityContext: { }
+  securityContext:
+    {}
     # capabilities:
     #   drop:
     #   - ALL
@@ -176,7 +178,7 @@ core:
   ingress:
     enabled: false
     className: ""
-    annotations: { }
+    annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
     hosts:
@@ -184,7 +186,7 @@ core:
         paths:
           - path: /
             pathType: ImplementationSpecific
-    tls: [ ]
+    tls: []
     #  - secretName: chart-example-tls
     #    hosts:
     #      - chart-example.local
@@ -197,23 +199,23 @@ core:
     # targetMemoryUtilizationPercentage: 80
 
   # Additional volumes on the output Deployment definition.
-  volumes: [ ]
+  volumes: []
   # - name: foo
   #   secret:
   #     secretName: mysecret
   #     optional: false
 
   # Additional volumeMounts on the output Deployment definition.
-  volumeMounts: [ ]
+  volumeMounts: []
   # - name: foo
   #   mountPath: "/etc/foo"
   #   readOnly: true
 
-  nodeSelector: { }
+  nodeSelector: {}
 
-  tolerations: [ ]
+  tolerations: []
 
-  affinity: { }
+  affinity: {}
 
 ## BroadCaster
 broadcaster:
@@ -229,22 +231,22 @@ broadcaster:
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
 
-  imagePullSecrets: [ ]
+  imagePullSecrets: []
 
-  env: [ ]
-  envFrom: [ ]
+  env: []
+  envFrom: []
 
   # -- Annotations to be added to server Deployment
-  deploymentAnnotations: { }
+  deploymentAnnotations: {}
 
   # -- Annotations to be added to server pods
-  podAnnotations: { }
+  podAnnotations: {}
 
   # -- Labels to be added to server pods
-  podLabels: { }
+  podLabels: {}
 
   # -- Resource limits and requests for the BroadCaster
-  resources: { }
+  resources: {}
   #  limits:
   #    cpu: 100m
   #    memory: 128Mi
@@ -252,11 +254,11 @@ broadcaster:
   #    cpu: 50m
   #    memory: 64Mi
 
-
-  podSecurityContext: { }
+  podSecurityContext: {}
   # fsGroup: 2000
 
-  securityContext: { }
+  securityContext:
+    {}
     # capabilities:
     #   drop:
   #   - ALL
@@ -265,23 +267,23 @@ broadcaster:
   # runAsUser: 1000
 
   # Additional volumes on the output Deployment definition.
-  volumes: [ ]
+  volumes: []
   # - name: foo
   #   secret:
   #     secretName: mysecret
   #     optional: false
 
   # Additional volumeMounts on the output Deployment definition.
-  volumeMounts: [ ]
+  volumeMounts: []
   # - name: foo
   #   mountPath: "/etc/foo"
   #   readOnly: true
 
-  nodeSelector: { }
+  nodeSelector: {}
 
-  tolerations: [ ]
+  tolerations: []
 
-  affinity: { }
+  affinity: {}
 
 ## Node monitorx
 monitorx:
@@ -295,22 +297,22 @@ monitorx:
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
 
-  imagePullSecrets: [ ]
+  imagePullSecrets: []
 
-  env: [ ]
-  envFrom: [ ]
+  env: []
+  envFrom: []
 
   # -- Annotations to be added to server Deployment
-  deploymentAnnotations: { }
+  deploymentAnnotations: {}
 
   # -- Annotations to be added to server pods
-  podAnnotations: { }
+  podAnnotations: {}
 
   # -- Labels to be added to server pods
-  podLabels: { }
+  podLabels: {}
 
   # -- Resource limits and requests for the BroadCaster
-  resources: { }
+  resources: {}
   #  limits:
   #    cpu: 100m
   #    memory: 128Mi
@@ -318,11 +320,11 @@ monitorx:
   #    cpu: 50m
   #    memory: 64Mi
 
-
-  podSecurityContext: { }
+  podSecurityContext: {}
   # fsGroup: 2000
 
-  securityContext: { }
+  securityContext:
+    {}
     # capabilities:
   #   drop:
   #   - ALL
@@ -331,23 +333,23 @@ monitorx:
   # runAsUser: 1000
 
   # Additional volumes on the output Deployment definition.
-  volumes: [ ]
+  volumes: []
   # - name: foo
   #   secret:
   #     secretName: mysecret
   #     optional: false
 
   # Additional volumeMounts on the output Deployment definition.
-  volumeMounts: [ ]
+  volumeMounts: []
   # - name: foo
   #   mountPath: "/etc/foo"
   #   readOnly: true
 
-  nodeSelector: { }
+  nodeSelector: {}
 
-  tolerations: [ ]
+  tolerations: []
 
-  affinity: { }
+  affinity: {}
 
 ## Node Configs
 configs:
@@ -388,7 +390,6 @@ federated: []
 #          cpu: 50m
 #        memory: 64Mi
 
-
 rsshub:
   enabled: false
 
@@ -403,6 +404,22 @@ additionalRSS:
       password:
       access_key:
       access_code:
+
+additionalAi:
+  id: agentdata-core
+  worker: core
+  endpoint: https://your.agentdata.com/
+  parameters:
+    agentdata_db_url:
+    openai_api_key:
+    ollama_host:
+    kaito_api_token:
+    twitter:
+      bearer_token:
+      api_key:
+      api_secret:
+      access_token:
+      access_token_secret:
 
 ## Database
 database:
@@ -516,7 +533,8 @@ redis:
       failureThreshold: 5
 
     # -- Resource limits and requests for redis-exporter sidecar
-    resources: {}
+    resources:
+      {}
       # limits:
       #   cpu: 50m
       #   memory: 64Mi
@@ -657,7 +675,8 @@ redis:
   # @default -- `[]` (defaults to global.topologySpreadConstraints)
   ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
   ## If labelSelector is left out, it will default to the labelSelector configuration of the deployment
-  topologySpreadConstraints: []
+  topologySpreadConstraints:
+    []
     # - maxSkew: 1
     #   topologyKey: topology.kubernetes.io/zone
   #   whenUnsatisfiable: DoNotSchedule

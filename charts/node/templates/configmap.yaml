@@ -16,6 +16,8 @@ data:
     discovery:
     {{- toYaml .Values.configs.discovery | nindent 6}}
     component:
+      ai:
+    {{- toYaml .Values.additionalAi | nindent 8}}
       rss:
     {{- toYaml .Values.additionalRSS | nindent 8}}
     {{- if .Values.workers }}
