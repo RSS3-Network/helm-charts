@@ -405,7 +405,7 @@ additionalRSS:
       access_key:
       access_code:
 
-additionalAi:
+additionalAI:
   id: agentdata-core
   worker: core
   endpoint: https://your.agentdata.com/
