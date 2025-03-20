@@ -17,7 +17,14 @@ data:
     {{- toYaml .Values.configs.discovery | nindent 6}}
     component:
       ai:
+    {{- if .Values.agentdata.enabled }}
+        id: agentdata-core
+        worker: core
+        endpoint: http://{{ .Release.Name }}-agentdata:{{ .Values.agentdata.service.port }}
+        parameters: {}
+    {{- else }}
     {{- toYaml .Values.additionalAI | nindent 8}}
+    {{- end }}
       rss:
     {{- toYaml .Values.additionalRSS | nindent 8}}
     {{- if .Values.workers }}

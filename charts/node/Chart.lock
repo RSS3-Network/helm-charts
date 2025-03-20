@@ -2,5 +2,8 @@ dependencies:
 - name: rsshub
   repository: https://naturalselectionlabs.github.io/helm-charts
   version: 0.2.9
-digest: sha256:63c561545aa1148dc57d1314f5e7d7459403d4c5822cb37cb4afc5a57f606320
-generated: "2024-01-24T11:28:59.501007+08:00"
+- name: agentdata
+  repository: file://../agentdata
+  version: 0.1.0
+digest: sha256:abde3a03902a002cab3272f468bfed2708448e170a6ce84848c26656d41289b1
+generated: "2025-03-20T10:01:02.658133+08:00"
