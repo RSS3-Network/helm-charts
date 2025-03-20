@@ -1,5 +1,16 @@
 apiVersion: v1
 entries:
+  agentdata:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2025-03-20T02:06:58.999371332Z"
+    description: A Helm chart for Kubernetes
+    digest: 11fdf9f42333f248f69e42e63e629ae83d082a0a63c9cebef57f41b692c3ab72
+    name: agentdata
+    type: application
+    urls:
+    - https://github.com/RSS3-Network/helm-charts/releases/download/agentdata-0.1.0/agentdata-0.1.0.tgz
+    version: 0.1.0
   chain:
   - apiVersion: v2
     appVersion: 1.16.0
@@ -286,6 +297,25 @@ entries:
     - https://github.com/RSS3-Network/helm-charts/releases/download/mastodon-5.1.1/mastodon-5.1.1.tgz
     version: 5.1.1
   node:
+  - apiVersion: v2
+    appVersion: 2.0.0
+    created: "2025-03-20T02:06:59.121880654Z"
+    dependencies:
+    - condition: rsshub.enabled
+      name: rsshub
+      repository: https://naturalselectionlabs.github.io/helm-charts
+      version: 0.2.9
+    - condition: agentdata.enabled
+      name: agentdata
+      repository: file://../agentdata
+      version: 0.1.0
+    description: A Helm chart for Kubernetes
+    digest: 5047140f8476b46cc4e9dce103f17629f41f2c988132bd8db32f582565f57649
+    name: node
+    type: application
+    urls:
+    - https://github.com/RSS3-Network/helm-charts/releases/download/node-0.7.2/node-0.7.2.tgz
+    version: 0.7.2
   - apiVersion: v2
     appVersion: v1.1.1
     created: "2025-03-10T03:15:49.710487475Z"
@@ -1700,4 +1730,4 @@ entries:
     urls:
     - https://github.com/RSS3-Network/helm-charts/releases/download/vsl-sequencer-0.1.0/vsl-sequencer-0.1.0.tgz
     version: 0.1.0
-generated: "2025-03-10T03:15:49.710903792Z"
+generated: "2025-03-20T02:06:59.122291693Z"
