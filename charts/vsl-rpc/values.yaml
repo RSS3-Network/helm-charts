@@ -20,6 +20,12 @@ jwt:
   path: "/config/jwt-secret.txt"
 sequencerhttp: "http://sequencer"
 
+curl:
+  image:
+    repository: quay.io/curl/curl
+    pullPolicy: IfNotPresent
+    tag: 8.16.0
+
 geth:
   genesis:
     path: /config/genesis.json
