@@ -26,7 +26,7 @@ geth:
     url: ""
   # Additional volumeMounts on the output Deployment definition.
   dataDir: /data
-  volumeMounts: [ ]
+  volumeMounts: []
   # - name: foo
   #   mountPath: "/etc/foo"
   #   readOnly: true
@@ -63,7 +63,7 @@ geth:
       enable: true
       addr: "0.0.0.0"
       port: 7300
-  resources: { }
+  resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
     # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -104,7 +104,7 @@ node:
     agent: ""
     banPeers: false
   # Additional volumeMounts on the output Deployment definition.
-  volumeMounts: [ ]
+  volumeMounts: []
   # - name: foo
   #   mountPath: "/etc/foo"
   #   readOnly: true
@@ -127,7 +127,7 @@ node:
   env: []
   envFrom: []
   args: []
-  resources: { }
+  resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
     # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -152,6 +152,17 @@ node:
     periodSeconds: 10
     timeoutSeconds: 5
     failureThreshold: 6
+  startupProbe:
+    exec:
+      command:
+        - /bin/sh
+        - -c
+        - |
+          geth --verbosity 0 --exec "eth.syncing" attach $GETH_DATADIR/geth.ipc | grep -q "false"
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 2419200
 ## proxyd
 proxyd:
   name: proxyd

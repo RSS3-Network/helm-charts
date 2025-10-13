@@ -218,6 +218,8 @@ spec:
             {{- toYaml .Values.geth.livenessProbe | nindent 12 }}
           readinessProbe:
             {{- toYaml .Values.geth.readinessProbe | nindent 12 }}
+          startupProbe:
+            {{- toYaml .Values.geth.startupProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.geth.resources | nindent 12 }}
           volumeMounts:
