@@ -30,7 +30,7 @@ openssl:
   image:
     repository: openquantumsafe/openssl3
     pullPolicy: IfNotPresent
-    tag: 3.3.0
+    tag: latest
 
 geth:
   genesis:
