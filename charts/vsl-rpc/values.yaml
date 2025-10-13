@@ -96,7 +96,7 @@ geth:
       command:
         - /bin/sh
         - -c
-        - geth --verbosity 0 --exec "eth.syncing" attach $GETH_DATADIR/geth.ipc | grep -q "true"
+        - geth --verbosity 0 --exec "net.listening" attach $GETH_DATADIR/geth.ipc | grep -q "true"
     initialDelaySeconds: 10
     periodSeconds: 10
   startupProbe:
