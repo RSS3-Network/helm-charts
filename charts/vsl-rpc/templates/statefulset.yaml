@@ -71,7 +71,7 @@ spec:
             - mountPath: /config
               name: config
       {{- with .Values.initContainers }}
-        {{- toYaml . | nindent 12 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
         - name: geth
