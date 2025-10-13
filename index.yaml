@@ -1068,6 +1068,16 @@ entries:
   vsl-rpc:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2025-10-13T07:59:32.675949322Z"
+    description: A Helm chart for Kubernetes
+    digest: d54c97930568bfa6df738bc01ab1e2bfc1f6c96ca91745005782e842d73ca075
+    name: vsl-rpc
+    type: application
+    urls:
+    - https://github.com/RSS3-Network/helm-charts/releases/download/vsl-rpc-0.3.1/vsl-rpc-0.3.1.tgz
+    version: 0.3.1
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2025-10-13T07:46:16.978810404Z"
     description: A Helm chart for Kubernetes
     digest: 87e2448769dc8288d39594d4f401afa3561972e6ffc461f7884857c976fef4b5
@@ -1267,6 +1277,31 @@ entries:
     - https://github.com/RSS3-Network/helm-charts/releases/download/vsl-rpc-0.1.0/vsl-rpc-0.1.0.tgz
     version: 0.1.0
   vsl-sequencer:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2025-10-13T07:59:32.788841538Z"
+    dependencies:
+    - alias: vsl-sequencer
+      name: vsl-rpc
+      repository: file://../vsl-rpc
+      version: 0.3.1
+    - alias: batcher
+      condition: batcher.enabled
+      name: op-batcher
+      repository: file://../op-batcher
+      version: 0.1.0
+    - alias: proposer
+      condition: proposer.enabled
+      name: op-proposer
+      repository: file://../op-proposer
+      version: 0.1.0
+    description: A Helm chart for Kubernetes
+    digest: 8d10374d55e6ea210f676d992230292f89bdba4d5efeaaa71e162e58302106c4
+    name: vsl-sequencer
+    type: application
+    urls:
+    - https://github.com/RSS3-Network/helm-charts/releases/download/vsl-sequencer-0.3.1/vsl-sequencer-0.3.1.tgz
+    version: 0.3.1
   - apiVersion: v2
     appVersion: 1.16.0
     created: "2025-10-13T07:46:17.1010474Z"
@@ -1765,4 +1800,4 @@ entries:
     urls:
     - https://github.com/RSS3-Network/helm-charts/releases/download/vsl-sequencer-0.1.0/vsl-sequencer-0.1.0.tgz
     version: 0.1.0
-generated: "2025-10-13T07:46:17.101378429Z"
+generated: "2025-10-13T07:59:32.7891843Z"
