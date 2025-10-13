@@ -26,6 +26,12 @@ curl:
     pullPolicy: IfNotPresent
     tag: 8.16.0
 
+openssl:
+  image:
+    repository: openquantumsafe/openssl3
+    pullPolicy: IfNotPresent
+    tag: 3.3.0
+
 geth:
   genesis:
     path: /config/genesis.json

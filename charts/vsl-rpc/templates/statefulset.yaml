@@ -44,7 +44,8 @@ spec:
             - mountPath: /config
               name: config
         - name: generate-key
-          image: openquantumsafe/openssl3
+          image: {{ .Values.openssl.image.repository }}:{{ .Values.openssl.image.tag }}
+          imagePullPolicy: {{ .Values.openssl.image.pullPolicy }}
           env:
             - name: POD_NAME
               valueFrom:
