@@ -96,10 +96,20 @@ geth:
       command:
         - /bin/sh
         - -c
-        - /usr/local/bin/geth --exec "eth.syncing" attach http://localhost:8545
+        - geth --verbosity 0 --exec "eth.syncing" attach $GETH_DATADIR/geth.ipc | grep -q "true"
     initialDelaySeconds: 10
     periodSeconds: 10
-
+  startupProbe:
+    exec:
+      command:
+        - /bin/sh
+        - -c
+        - |
+          geth --verbosity 0 --exec "eth.syncing" attach $GETH_DATADIR/geth.ipc | grep -q "false"
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 2419200
 node:
   autoDiscovery: true
   rollup:
@@ -164,17 +174,6 @@ node:
     periodSeconds: 10
     timeoutSeconds: 5
     failureThreshold: 6
-  startupProbe:
-    exec:
-      command:
-        - /bin/sh
-        - -c
-        - |
-          geth --verbosity 0 --exec "eth.syncing" attach $GETH_DATADIR/geth.ipc | grep -q "false"
-    initialDelaySeconds: 10
-    periodSeconds: 10
-    timeoutSeconds: 1
-    failureThreshold: 2419200
 ## proxyd
 proxyd:
   name: proxyd
